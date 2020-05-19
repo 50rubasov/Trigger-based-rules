@@ -30,7 +30,7 @@ namespace FacebookApiModel
         /// <param name="name">Название правила</param>
         /// <param name="value">Значение</param>
         /// <returns></returns>
-        public async Task UploadAsync(string acc, string name, string value)
+        public async Task UploadAsync(string acc, string name, string value, string entityType, string conditionOperator, string conditionField, string action)
         {
             try
             {
@@ -40,21 +40,19 @@ namespace FacebookApiModel
                     string evalutionSpecString = "{\"evaluation_type\":\"TRIGGER\","
                                                  + "\"trigger\" : {"
                                                  + "\"type\" : \"STATS_CHANGE\","
-                                                 + "\"field\": \"spent\","
-                                                 + "\"value\": \"1325\","
-                                                 + "\"operator\": \"GREATER_THAN\"},"
+                                                 + "\"field\": \""+ conditionField + "\","
+                                                 + "\"value\": \""+value+"\","
+                                                 + "\"operator\": \"" + conditionOperator + "\"},"
                                                  + "\"filters\": ["
                                                  + "{"
                                                  + "\"field\": \"entity_type\","
-                                                 + "\"value\": \"ADSET\","
+                                                 + "\"value\": \"" + entityType + "\","
                                                  + "\"operator\" : \"EQUAL\"},"
                                                  + "{"
                                                  + "\"field\": \"time_preset\","
                                                  + "\"value\": \"LIFETIME\","
                                                  + "\"operator\": \"EQUAL\" },]}";
-                    string executionSpecString = @"{  
-                    'execution_type':'PAUSE'  
-                        }";
+                    string executionSpecString = "{\"execution_type\":\""+action+"\"}";
                     var execution_spec = JObject.Parse(executionSpecString);
                     var evaluation_spec = JObject.Parse(evalutionSpecString);
 
@@ -74,6 +72,8 @@ namespace FacebookApiModel
                 throw new Exception();
             }
         }
+
+      
     }
 }
     

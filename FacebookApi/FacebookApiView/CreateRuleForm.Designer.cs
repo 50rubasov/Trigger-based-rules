@@ -34,13 +34,14 @@
             this.ConditionOperatorComboBox = new System.Windows.Forms.ComboBox();
             this.ConditionFieldComboBox = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.NameTextBox = new System.Windows.Forms.TextBox();
             this.CreateButton = new System.Windows.Forms.Button();
             this.CloseButton = new System.Windows.Forms.Button();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.comboBox5 = new System.Windows.Forms.ComboBox();
+            this.EntityTypeComboBox = new System.Windows.Forms.ComboBox();
+            this.ActionOnRadioButton = new System.Windows.Forms.RadioButton();
+            this.ActionOffRadioButton = new System.Windows.Forms.RadioButton();
             this.ConditionGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ConditionValueTextBox)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -81,41 +82,41 @@
             // ConditionOperatorComboBox
             // 
             this.ConditionOperatorComboBox.FormattingEnabled = true;
+            this.ConditionOperatorComboBox.Items.AddRange(new object[] {
+            "Больше, чем",
+            "Меньше, чем",
+            "Равно"});
             this.ConditionOperatorComboBox.Location = new System.Drawing.Point(162, 21);
             this.ConditionOperatorComboBox.Name = "ConditionOperatorComboBox";
             this.ConditionOperatorComboBox.Size = new System.Drawing.Size(112, 24);
             this.ConditionOperatorComboBox.TabIndex = 3;
             this.ConditionOperatorComboBox.Text = "Больше, чем";
+            this.ConditionOperatorComboBox.SelectedIndexChanged += new System.EventHandler(this.ConditionOperatorComboBox_SelectedIndexChanged);
             // 
             // ConditionFieldComboBox
             // 
             this.ConditionFieldComboBox.FormattingEnabled = true;
+            this.ConditionFieldComboBox.Items.AddRange(new object[] {
+            "Цена за результат",
+            "Результаты",
+            "Расходы"});
             this.ConditionFieldComboBox.Location = new System.Drawing.Point(6, 21);
             this.ConditionFieldComboBox.Name = "ConditionFieldComboBox";
             this.ConditionFieldComboBox.Size = new System.Drawing.Size(150, 24);
             this.ConditionFieldComboBox.TabIndex = 2;
             this.ConditionFieldComboBox.Text = "Цена за результат";
+            this.ConditionFieldComboBox.SelectedIndexChanged += new System.EventHandler(this.ConditionFieldComboBox_SelectedIndexChanged);
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.comboBox1);
+            this.groupBox1.Controls.Add(this.ActionOffRadioButton);
+            this.groupBox1.Controls.Add(this.ActionOnRadioButton);
             this.groupBox1.Location = new System.Drawing.Point(12, 138);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(362, 52);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Действие";
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "Выключить группы объявлений"});
-            this.comboBox1.Location = new System.Drawing.Point(6, 21);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(268, 24);
-            this.comboBox1.TabIndex = 1;
-            this.comboBox1.Text = "Выключить группу объявлений";
             // 
             // groupBox4
             // 
@@ -156,7 +157,7 @@
             // 
             // groupBox5
             // 
-            this.groupBox5.Controls.Add(this.comboBox5);
+            this.groupBox5.Controls.Add(this.EntityTypeComboBox);
             this.groupBox5.Location = new System.Drawing.Point(12, 77);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(362, 55);
@@ -164,17 +165,43 @@
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Область применения правила";
             // 
-            // comboBox5
+            // EntityTypeComboBox
             // 
-            this.comboBox5.FormattingEnabled = true;
-            this.comboBox5.Items.AddRange(new object[] {
-            "Компании",
-            "Объявления"});
-            this.comboBox5.Location = new System.Drawing.Point(6, 21);
-            this.comboBox5.Name = "comboBox5";
-            this.comboBox5.Size = new System.Drawing.Size(265, 24);
-            this.comboBox5.TabIndex = 0;
-            this.comboBox5.Text = "Группа объявлений";
+            this.EntityTypeComboBox.FormattingEnabled = true;
+            this.EntityTypeComboBox.Items.AddRange(new object[] {
+            "Компания",
+            "Группа объявлений",
+            "Объявление"});
+            this.EntityTypeComboBox.Location = new System.Drawing.Point(6, 21);
+            this.EntityTypeComboBox.Name = "EntityTypeComboBox";
+            this.EntityTypeComboBox.Size = new System.Drawing.Size(265, 24);
+            this.EntityTypeComboBox.TabIndex = 0;
+            this.EntityTypeComboBox.Text = "Группа объявлений";
+            this.EntityTypeComboBox.SelectedIndexChanged += new System.EventHandler(this.EntityTypeComboBox_SelectedIndexChanged);
+            // 
+            // ActionOnRadioButton
+            // 
+            this.ActionOnRadioButton.AutoSize = true;
+            this.ActionOnRadioButton.Location = new System.Drawing.Point(116, 21);
+            this.ActionOnRadioButton.Name = "ActionOnRadioButton";
+            this.ActionOnRadioButton.Size = new System.Drawing.Size(93, 21);
+            this.ActionOnRadioButton.TabIndex = 0;
+            this.ActionOnRadioButton.Text = "Включить";
+            this.ActionOnRadioButton.UseVisualStyleBackColor = true;
+            this.ActionOnRadioButton.CheckedChanged += new System.EventHandler(this.ActionOnRadioButton_CheckedChanged);
+            // 
+            // ActionOffRadioButton
+            // 
+            this.ActionOffRadioButton.AutoSize = true;
+            this.ActionOffRadioButton.Checked = true;
+            this.ActionOffRadioButton.Location = new System.Drawing.Point(7, 21);
+            this.ActionOffRadioButton.Name = "ActionOffRadioButton";
+            this.ActionOffRadioButton.Size = new System.Drawing.Size(103, 21);
+            this.ActionOffRadioButton.TabIndex = 1;
+            this.ActionOffRadioButton.TabStop = true;
+            this.ActionOffRadioButton.Text = "Выключить";
+            this.ActionOffRadioButton.UseVisualStyleBackColor = true;
+            this.ActionOffRadioButton.CheckedChanged += new System.EventHandler(this.ActionOffRadioButton_CheckedChanged);
             // 
             // CreateRuleForm
             // 
@@ -192,6 +219,7 @@
             this.ConditionGroupBox.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.ConditionValueTextBox)).EndInit();
             this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.groupBox5.ResumeLayout(false);
@@ -205,13 +233,14 @@
         private System.Windows.Forms.ComboBox ConditionOperatorComboBox;
         private System.Windows.Forms.ComboBox ConditionFieldComboBox;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.TextBox NameTextBox;
         private System.Windows.Forms.Button CreateButton;
         private System.Windows.Forms.Button CloseButton;
         private System.Windows.Forms.GroupBox groupBox5;
-        private System.Windows.Forms.ComboBox comboBox5;
+        private System.Windows.Forms.ComboBox EntityTypeComboBox;
         private System.Windows.Forms.Button AddCondition;
+        private System.Windows.Forms.RadioButton ActionOffRadioButton;
+        private System.Windows.Forms.RadioButton ActionOnRadioButton;
     }
 }

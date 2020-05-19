@@ -30,6 +30,10 @@
         {
             this.components = new System.ComponentModel.Container();
             this.DataGridView = new System.Windows.Forms.DataGridView();
+            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Targer = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CreateRuleButton = new System.Windows.Forms.Button();
             this.DeleteButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -40,10 +44,6 @@
             this.TokenTextBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.filtersResultBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Targer = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.DataGridView)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.filtersResultBindingSource)).BeginInit();
@@ -62,13 +62,36 @@
             this.Column2});
             this.DataGridView.Location = new System.Drawing.Point(12, 75);
             this.DataGridView.Name = "DataGridView";
-            this.DataGridView.ReadOnly = true;
             this.DataGridView.RowHeadersWidth = 30;
             this.DataGridView.RowTemplate.Height = 24;
             this.DataGridView.Size = new System.Drawing.Size(714, 263);
             this.DataGridView.StandardTab = true;
             this.DataGridView.TabIndex = 6;
-            
+            // 
+            // Column1
+            // 
+            this.Column1.FillWeight = 75F;
+            this.Column1.HeaderText = "Название";
+            this.Column1.MinimumWidth = 6;
+            this.Column1.Name = "Column1";
+            // 
+            // Targer
+            // 
+            this.Targer.HeaderText = "Цель Правила";
+            this.Targer.MinimumWidth = 6;
+            this.Targer.Name = "Targer";
+            // 
+            // Column3
+            // 
+            this.Column3.HeaderText = "Действие";
+            this.Column3.MinimumWidth = 6;
+            this.Column3.Name = "Column3";
+            // 
+            // Column2
+            // 
+            this.Column2.HeaderText = "Условие";
+            this.Column2.MinimumWidth = 6;
+            this.Column2.Name = "Column2";
             // 
             // CreateRuleButton
             // 
@@ -161,35 +184,6 @@
             // filtersResultBindingSource
             // 
             this.filtersResultBindingSource.DataSource = typeof(FacebookApiModel.FiltersResult);
-            // 
-            // Column1
-            // 
-            this.Column1.FillWeight = 75F;
-            this.Column1.HeaderText = "Название";
-            this.Column1.MinimumWidth = 6;
-            this.Column1.Name = "Column1";
-            this.Column1.ReadOnly = true;
-            // 
-            // Targer
-            // 
-            this.Targer.HeaderText = "Цель Правила";
-            this.Targer.MinimumWidth = 6;
-            this.Targer.Name = "Targer";
-            this.Targer.ReadOnly = true;
-            // 
-            // Column3
-            // 
-            this.Column3.HeaderText = "Действие";
-            this.Column3.MinimumWidth = 6;
-            this.Column3.Name = "Column3";
-            this.Column3.ReadOnly = true;
-            // 
-            // Column2
-            // 
-            this.Column2.HeaderText = "Условие";
-            this.Column2.MinimumWidth = 6;
-            this.Column2.Name = "Column2";
-            this.Column2.ReadOnly = true;
             // 
             // MainForm
             // 

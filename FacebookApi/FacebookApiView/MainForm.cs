@@ -73,9 +73,26 @@ namespace FacebookApiView
         /// </summary>
         /// <param name="sender">Объект</param>
         /// <param name="e">Действие</param>
-        private void DeleteButton_Click(object sender, EventArgs e)
+        private async void DeleteButton_Click(object sender, EventArgs e)
         {
-
+            
+            var request = new RestRequest($"act_{accid}/adrules_library", Method.GET);
+            request.AddQueryParameter("fields", "name");
+            var json = await re.ExecuteRequestAsync(request);
+            foreach (var rule in json["data"])
+            {
+                string selected = DataGridView.SelectedCells[0].Value.ToString();
+                string name = rule["name"].ToString();
+                if (name == selected)
+                {
+                    request = new RestRequest($"{rule["id"]}", Method.DELETE);
+                    var js = await re.ExecuteRequestAsync(request);
+                    
+                    DataGridView.Rows.RemoveAt(DataGridView.SelectedCells[0].RowIndex);
+                }
+            }
+            
+            GetRules(accid); 
         }
 
         /// <summary>
@@ -85,8 +102,6 @@ namespace FacebookApiView
         /// <param name="e">Действие</param>
         private async void TokenTextBox_Leave(object sender, EventArgs e)
         {
-
-
             token = TokenTextBox.Text;
             re = GetConfiguredRequestExecutor(apiAddress);
             navigator = new Navigator(re);
@@ -150,7 +165,7 @@ namespace FacebookApiView
             var request = new RestRequest($"act_{acc}/adrules_library", Method.GET);
             request.AddQueryParameter("fields", "entity_type,evaluation_spec,execution_spec,name,schedule_spec,execution_type");
             var json = await re.ExecuteRequestAsync(request);
-            string condition = null;
+            
 
             foreach (var rule in json["data"])
                 {
@@ -171,10 +186,10 @@ namespace FacebookApiView
                             searchResults.Add(searchResult);
                         }
                     }
-
+                    string condition = null;
                     foreach (var s in searchResults)
                     {
-                        
+                        condition = null;
                         condition = condition+s;
                     }
                     DataGridView.Rows.Add(rule["name"], rule["entity_type"], rule["execution_spec"]["execution_type"], condition);
