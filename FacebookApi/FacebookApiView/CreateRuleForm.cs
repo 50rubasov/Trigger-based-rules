@@ -8,12 +8,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using FacebookApiModel;
+using Newtonsoft.Json.Linq;
 
 namespace FacebookApiView
 {
     public partial class CreateRuleForm : Form
     {
-        private int HeightGroupBox = 81;
         
         public RulesCreator rc;
         private string _acc;
@@ -21,11 +21,23 @@ namespace FacebookApiView
         private string _conditionOperator;
         private string _conditionField;
         private string _action;
-        
+        private int textboxcounter = 0;
+        Dictionary<string, string> names = new Dictionary<string, string>();
 
         public CreateRuleForm (string acc, RequestExecutor re)
         {
             InitializeComponent();
+
+            names.Add("Цена за результат", "cost_per");
+            names.Add("Результаты", "results");
+            names.Add("Расходы", "spent");
+            names.Add("Больше, чем", "GREATER_THAN");
+            names.Add("Меньше, чем", "LESS_THAN");
+            names.Add("Равно", "EQUAL");
+            names.Add("Группа объявлений", "ADSET");
+            names.Add("Компания", "CAMPAIGN");
+            names.Add("Объявление", "AD");
+            
             _acc = acc;
             rc = new RulesCreator(re);
             _entityType = "ADSET";
@@ -36,21 +48,37 @@ namespace FacebookApiView
 
         private void CreateButton_Click(object sender, EventArgs e)
         {
-            rc.UploadAsync(_acc, NameTextBox.Text, ConditionValueTextBox.Text, _entityType, _conditionOperator, _conditionField, _action);
+            string filters = null;
+            string fields;
+            string operators;
+            string values;
+            for (int i = 1; i <= textboxcounter; i++)
+            {
+                fields = (TableLayoutPanel.Controls["ConditionFieldComboBox" + i.ToString()] as ComboBox).Text;
+                operators = (TableLayoutPanel.Controls["ConditionOperatorComboBox" + i.ToString()] as ComboBox).Text;
+                values = (TableLayoutPanel.Controls["ConditionValueTextBox" + i.ToString()] as NumericUpDown).Value.ToString();
+                filters = filters + "{"
+                + "\"field\": \"" + names[fields] + "\","
+                + "\"value\": \"" + values + "\","
+                + "\"operator\" : \"" + names[operators] + "\"},";                          
+            }
+
+           
+            rc.UploadAsync(_acc, NameTextBox.Text, ConditionValueTextBox.Text, _entityType, _conditionOperator, _conditionField, _action, filters);
             MessageBox.Show("Правило успешно добавлено!");
+        
         }
 
         private void AddCondition_Click(object sender, EventArgs e)
         {
-            int i = 1;
-            
+            textboxcounter++;
             ComboBox field = new ComboBox();
             ComboBox op = new ComboBox();
             NumericUpDown value = new NumericUpDown();
 
-            field.Name = "ConditionFieldComboBox" + i;
-            op.Name = "ConditionOperatorComboBox" + i;
-            value.Name = "ConditionValueComboBox" + i;
+            field.Name = "ConditionFieldComboBox" + textboxcounter;
+            op.Name = "ConditionOperatorComboBox" + textboxcounter;
+            value.Name = "ConditionValueTextBox" + textboxcounter;
 
             string[] fields = { "Цена за результат", "Результаты", "Расходы" };
             string[] ops = { "Больше, чем", "Меньше, чем", "Равно" };
@@ -63,16 +91,19 @@ namespace FacebookApiView
             op.Size = new Size(106, 24); // размер
             op.Text = "Больше, чем"; //текст
             value.Size = new Size(75, 22); // размер
+            value.Value = 0;
 
             TableLayoutPanel.RowCount = ++TableLayoutPanel.RowCount;
             TableLayoutPanel.Size = new Size(361, TableLayoutPanel.Size.Height + 30);
             TableLayoutPanel.RowStyles.Add(new RowStyle());
             TableLayoutPanel.Controls.Add(field, 0, TableLayoutPanel.RowCount -1 );
             TableLayoutPanel.Controls.Add(op, 1, TableLayoutPanel.RowCount -1);
-            TableLayoutPanel.Controls.Add(value, 2, TableLayoutPanel.RowCount -1 );
+            TableLayoutPanel.Controls.Add(value, 2, TableLayoutPanel.RowCount -1 );       
+                
 
             this.Height += 30;
-            i++;
+
+            
         }
 
       
@@ -155,6 +186,8 @@ namespace FacebookApiView
                 TableLayoutPanel.RowCount--;
                 TableLayoutPanel.Size = new Size(361, TableLayoutPanel.Size.Height - 30);
                 this.Height -= 30;
+
+                textboxcounter--;
             }            
         }
     }

@@ -188,8 +188,7 @@ namespace FacebookApiView
                     }
                     string condition = null;
                     foreach (var s in searchResults)
-                    {
-                        condition = null;
+                    {                       
                         condition = condition+s;
                     }
                     DataGridView.Rows.Add(rule["name"], rule["entity_type"], rule["execution_spec"]["execution_type"], condition);
