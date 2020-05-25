@@ -30,19 +30,15 @@ namespace FacebookApiModel
         /// <param name="name">Название правила</param>
         /// <param name="value">Значение</param>
         /// <returns></returns>
-        public async Task UploadAsync(string acc, string name, string value, string entityType, string conditionOperator, string conditionField, string action,string filters)
+        public async Task UploadAsync(string acc, string trigger, string name,  string entityType,  string action,string filters)
         {
             try
             {
                 var accSplit = acc.Split(',');
                 foreach (var a in accSplit)
                 {
-                    string evalutionSpecString = "{\"evaluation_type\":\"TRIGGER\","
-                                                 + "\"trigger\" : {"
-                                                 + "\"type\" : \"STATS_CHANGE\","
-                                                 + "\"field\": \""+ conditionField + "\","
-                                                 + "\"value\": \""+value+"\","
-                                                 + "\"operator\": \"" + conditionOperator + "\"},"
+                 
+                    string evalutionSpecString = trigger
                                                  + "\"filters\": ["
                                                  + "{"
                                                  + "\"field\": \"entity_type\","
@@ -51,7 +47,9 @@ namespace FacebookApiModel
                                                  + "{"
                                                  + "\"field\": \"time_preset\","
                                                  + "\"value\": \"LIFETIME\","
-                                                 + "\"operator\": \"EQUAL\" },"+filters+"]}";
+                                                 + "\"operator\": \"EQUAL\" }," + filters + "]}";
+
+
                     string executionSpecString = "{\"execution_type\":\""+action+"\"}";
                     var execution_spec = JObject.Parse(executionSpecString);
                     var evaluation_spec = JObject.Parse(evalutionSpecString);
@@ -70,7 +68,6 @@ namespace FacebookApiModel
                 throw new Exception();
             }
         }
-
       
     }
 }

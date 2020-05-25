@@ -52,6 +52,9 @@
             // DataGridView
             // 
             this.DataGridView.AllowUserToAddRows = false;
+            this.DataGridView.AllowUserToDeleteRows = false;
+            this.DataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.DataGridView.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.DataGridView.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
             this.DataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -62,9 +65,10 @@
             this.Column2});
             this.DataGridView.Location = new System.Drawing.Point(12, 75);
             this.DataGridView.Name = "DataGridView";
+            this.DataGridView.ReadOnly = true;
             this.DataGridView.RowHeadersWidth = 30;
             this.DataGridView.RowTemplate.Height = 24;
-            this.DataGridView.Size = new System.Drawing.Size(714, 263);
+            this.DataGridView.Size = new System.Drawing.Size(717, 263);
             this.DataGridView.StandardTab = true;
             this.DataGridView.TabIndex = 6;
             // 
@@ -74,24 +78,28 @@
             this.Column1.HeaderText = "Название";
             this.Column1.MinimumWidth = 6;
             this.Column1.Name = "Column1";
+            this.Column1.ReadOnly = true;
             // 
             // Targer
             // 
             this.Targer.HeaderText = "Цель Правила";
             this.Targer.MinimumWidth = 6;
             this.Targer.Name = "Targer";
+            this.Targer.ReadOnly = true;
             // 
             // Column3
             // 
             this.Column3.HeaderText = "Действие";
             this.Column3.MinimumWidth = 6;
             this.Column3.Name = "Column3";
+            this.Column3.ReadOnly = true;
             // 
             // Column2
             // 
             this.Column2.HeaderText = "Условие";
             this.Column2.MinimumWidth = 6;
             this.Column2.Name = "Column2";
+            this.Column2.ReadOnly = true;
             // 
             // CreateRuleButton
             // 
@@ -105,7 +113,9 @@
             // 
             // DeleteButton
             // 
-            this.DeleteButton.Location = new System.Drawing.Point(456, 344);
+            this.DeleteButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.DeleteButton.Location = new System.Drawing.Point(459, 344);
             this.DeleteButton.Name = "DeleteButton";
             this.DeleteButton.Size = new System.Drawing.Size(270, 33);
             this.DeleteButton.TabIndex = 8;
@@ -123,13 +133,14 @@
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Location = new System.Drawing.Point(13, 13);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(713, 56);
+            this.groupBox1.Size = new System.Drawing.Size(716, 56);
             this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Выбор аккаунта";
             // 
             // RkComboBox
             // 
+            this.RkComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.RkComboBox.FormattingEnabled = true;
             this.RkComboBox.Location = new System.Drawing.Point(553, 22);
             this.RkComboBox.Name = "RkComboBox";
@@ -157,6 +168,7 @@
             // 
             // BmComboBox
             // 
+            this.BmComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.BmComboBox.FormattingEnabled = true;
             this.BmComboBox.Location = new System.Drawing.Point(390, 22);
             this.BmComboBox.Name = "BmComboBox";
@@ -194,6 +206,8 @@
             this.Controls.Add(this.DeleteButton);
             this.Controls.Add(this.CreateRuleButton);
             this.Controls.Add(this.DataGridView);
+            this.MaximumSize = new System.Drawing.Size(759, 436);
+            this.MinimumSize = new System.Drawing.Size(759, 436);
             this.Name = "MainForm";
             this.Text = "Правила на основе триггеров";
             ((System.ComponentModel.ISupportInitialize)(this.DataGridView)).EndInit();

@@ -27,7 +27,7 @@ namespace FacebookApiModel
         public RequestExecutor(string apiAddress, string accessToken)
         {
             Rc = new RestClient(apiAddress);
-
+            _accessToken = accessToken;
             //Прокси
 
             //if (!string.IsNullOrEmpty(proxyAddress))
@@ -43,7 +43,6 @@ namespace FacebookApiModel
             //    };
             //}
 
-            _accessToken = accessToken;
         }
 
         /// <summary>

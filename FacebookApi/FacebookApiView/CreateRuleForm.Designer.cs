@@ -29,9 +29,8 @@
         private void InitializeComponent()
         {
             this.AddCondition = new System.Windows.Forms.Button();
-            this.ConditionValueTextBox = new System.Windows.Forms.NumericUpDown();
-            this.ConditionOperatorComboBox = new System.Windows.Forms.ComboBox();
-            this.ConditionFieldComboBox = new System.Windows.Forms.ComboBox();
+            this.ConditionOperatorComboBox1 = new System.Windows.Forms.ComboBox();
+            this.ConditionFieldComboBox1 = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.ActionOffRadioButton = new System.Windows.Forms.RadioButton();
             this.ActionOnRadioButton = new System.Windows.Forms.RadioButton();
@@ -42,10 +41,10 @@
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.EntityTypeComboBox = new System.Windows.Forms.ComboBox();
             this.TableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.ConditionValueTextBox1 = new System.Windows.Forms.TextBox();
             this.ConditionGroupBox = new System.Windows.Forms.GroupBox();
             this.DeleteCondition = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.ConditionValueTextBox)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox5.SuspendLayout();
@@ -57,46 +56,37 @@
             // 
             this.AddCondition.Location = new System.Drawing.Point(7, 21);
             this.AddCondition.Name = "AddCondition";
-            this.AddCondition.Size = new System.Drawing.Size(92, 22);
+            this.AddCondition.Size = new System.Drawing.Size(137, 22);
             this.AddCondition.TabIndex = 13;
             this.AddCondition.Text = "+";
             this.AddCondition.UseVisualStyleBackColor = true;
             this.AddCondition.Click += new System.EventHandler(this.AddCondition_Click);
             // 
-            // ConditionValueTextBox
+            // ConditionOperatorComboBox1
             // 
-            this.ConditionValueTextBox.Location = new System.Drawing.Point(279, 3);
-            this.ConditionValueTextBox.Name = "ConditionValueTextBox";
-            this.ConditionValueTextBox.Size = new System.Drawing.Size(75, 22);
-            this.ConditionValueTextBox.TabIndex = 4;
+            this.ConditionOperatorComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ConditionOperatorComboBox1.FormattingEnabled = true;
+            this.ConditionOperatorComboBox1.Items.AddRange(new object[] {
+            ">",
+            "<",
+            "="});
+            this.ConditionOperatorComboBox1.Location = new System.Drawing.Point(160, 3);
+            this.ConditionOperatorComboBox1.Name = "ConditionOperatorComboBox1";
+            this.ConditionOperatorComboBox1.Size = new System.Drawing.Size(37, 24);
+            this.ConditionOperatorComboBox1.TabIndex = 3;
             // 
-            // ConditionOperatorComboBox
+            // ConditionFieldComboBox1
             // 
-            this.ConditionOperatorComboBox.FormattingEnabled = true;
-            this.ConditionOperatorComboBox.Items.AddRange(new object[] {
-            "Больше, чем",
-            "Меньше, чем",
-            "Равно"});
-            this.ConditionOperatorComboBox.Location = new System.Drawing.Point(167, 3);
-            this.ConditionOperatorComboBox.Name = "ConditionOperatorComboBox";
-            this.ConditionOperatorComboBox.Size = new System.Drawing.Size(106, 24);
-            this.ConditionOperatorComboBox.TabIndex = 3;
-            this.ConditionOperatorComboBox.Text = "Больше, чем";
-            this.ConditionOperatorComboBox.SelectedIndexChanged += new System.EventHandler(this.ConditionOperatorComboBox_SelectedIndexChanged);
-            // 
-            // ConditionFieldComboBox
-            // 
-            this.ConditionFieldComboBox.FormattingEnabled = true;
-            this.ConditionFieldComboBox.Items.AddRange(new object[] {
+            this.ConditionFieldComboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.ConditionFieldComboBox1.FormattingEnabled = true;
+            this.ConditionFieldComboBox1.Items.AddRange(new object[] {
             "Цена за результат",
             "Результаты",
             "Расходы"});
-            this.ConditionFieldComboBox.Location = new System.Drawing.Point(3, 3);
-            this.ConditionFieldComboBox.Name = "ConditionFieldComboBox";
-            this.ConditionFieldComboBox.Size = new System.Drawing.Size(158, 24);
-            this.ConditionFieldComboBox.TabIndex = 2;
-            this.ConditionFieldComboBox.Text = "Цена за результат";
-            this.ConditionFieldComboBox.SelectedIndexChanged += new System.EventHandler(this.ConditionFieldComboBox_SelectedIndexChanged);
+            this.ConditionFieldComboBox1.Location = new System.Drawing.Point(3, 3);
+            this.ConditionFieldComboBox1.Name = "ConditionFieldComboBox1";
+            this.ConditionFieldComboBox1.Size = new System.Drawing.Size(151, 24);
+            this.ConditionFieldComboBox1.TabIndex = 2;
             // 
             // groupBox1
             // 
@@ -104,7 +94,7 @@
             this.groupBox1.Controls.Add(this.ActionOnRadioButton);
             this.groupBox1.Location = new System.Drawing.Point(12, 138);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(362, 52);
+            this.groupBox1.Size = new System.Drawing.Size(281, 52);
             this.groupBox1.TabIndex = 6;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Действие";
@@ -120,7 +110,7 @@
             this.ActionOffRadioButton.TabStop = true;
             this.ActionOffRadioButton.Text = "Выключить";
             this.ActionOffRadioButton.UseVisualStyleBackColor = true;
-            this.ActionOffRadioButton.CheckedChanged += new System.EventHandler(this.ActionOffRadioButton_CheckedChanged);
+
             // 
             // ActionOnRadioButton
             // 
@@ -131,14 +121,14 @@
             this.ActionOnRadioButton.TabIndex = 0;
             this.ActionOnRadioButton.Text = "Включить";
             this.ActionOnRadioButton.UseVisualStyleBackColor = true;
-            this.ActionOnRadioButton.CheckedChanged += new System.EventHandler(this.ActionOnRadioButton_CheckedChanged);
+
             // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.NameTextBox);
             this.groupBox4.Location = new System.Drawing.Point(12, 12);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(363, 59);
+            this.groupBox4.Size = new System.Drawing.Size(281, 59);
             this.groupBox4.TabIndex = 9;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Название правила";
@@ -147,15 +137,15 @@
             // 
             this.NameTextBox.Location = new System.Drawing.Point(7, 22);
             this.NameTextBox.Name = "NameTextBox";
-            this.NameTextBox.Size = new System.Drawing.Size(348, 22);
+            this.NameTextBox.Size = new System.Drawing.Size(264, 22);
             this.NameTextBox.TabIndex = 0;
             // 
             // CreateButton
             // 
             this.CreateButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.CreateButton.Location = new System.Drawing.Point(12, 315);
+            this.CreateButton.Location = new System.Drawing.Point(12, 311);
             this.CreateButton.Name = "CreateButton";
-            this.CreateButton.Size = new System.Drawing.Size(176, 28);
+            this.CreateButton.Size = new System.Drawing.Size(143, 28);
             this.CreateButton.TabIndex = 10;
             this.CreateButton.Text = "Создать правило";
             this.CreateButton.UseVisualStyleBackColor = true;
@@ -164,9 +154,9 @@
             // CloseButton
             // 
             this.CloseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.CloseButton.Location = new System.Drawing.Point(201, 314);
+            this.CloseButton.Location = new System.Drawing.Point(161, 310);
             this.CloseButton.Name = "CloseButton";
-            this.CloseButton.Size = new System.Drawing.Size(168, 29);
+            this.CloseButton.Size = new System.Drawing.Size(132, 29);
             this.CloseButton.TabIndex = 11;
             this.CloseButton.Text = "Закрыть";
             this.CloseButton.UseVisualStyleBackColor = true;
@@ -177,13 +167,14 @@
             this.groupBox5.Controls.Add(this.EntityTypeComboBox);
             this.groupBox5.Location = new System.Drawing.Point(12, 77);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(362, 55);
+            this.groupBox5.Size = new System.Drawing.Size(281, 55);
             this.groupBox5.TabIndex = 12;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Область применения правила";
             // 
             // EntityTypeComboBox
             // 
+            this.EntityTypeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.EntityTypeComboBox.FormattingEnabled = true;
             this.EntityTypeComboBox.Items.AddRange(new object[] {
             "Компания",
@@ -193,42 +184,49 @@
             this.EntityTypeComboBox.Name = "EntityTypeComboBox";
             this.EntityTypeComboBox.Size = new System.Drawing.Size(265, 24);
             this.EntityTypeComboBox.TabIndex = 0;
-            this.EntityTypeComboBox.Text = "Группа объявлений";
-            this.EntityTypeComboBox.SelectedIndexChanged += new System.EventHandler(this.EntityTypeComboBox_SelectedIndexChanged);
+            this.EntityTypeComboBox.Leave += new System.EventHandler(this.EntityTypeComboBox_Leave);
             // 
             // TableLayoutPanel
             // 
             this.TableLayoutPanel.ColumnCount = 3;
-            this.TableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 45.42936F));
-            this.TableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 31.02493F));
-            this.TableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 23.2687F));
-            this.TableLayoutPanel.Controls.Add(this.ConditionOperatorComboBox, 1, 0);
-            this.TableLayoutPanel.Controls.Add(this.ConditionFieldComboBox, 0, 0);
-            this.TableLayoutPanel.Controls.Add(this.ConditionValueTextBox, 2, 0);
+            this.TableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 56.04027F));
+            this.TableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 15.61462F));
+            this.TableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 28.57143F));
+            this.TableLayoutPanel.Controls.Add(this.ConditionOperatorComboBox1, 1, 0);
+            this.TableLayoutPanel.Controls.Add(this.ConditionFieldComboBox1, 0, 0);
+            this.TableLayoutPanel.Controls.Add(this.ConditionValueTextBox1, 2, 0);
             this.TableLayoutPanel.Location = new System.Drawing.Point(11, 217);
             this.TableLayoutPanel.Name = "TableLayoutPanel";
             this.TableLayoutPanel.RowCount = 1;
             this.TableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.TableLayoutPanel.Size = new System.Drawing.Size(361, 32);
+            this.TableLayoutPanel.Size = new System.Drawing.Size(282, 32);
             this.TableLayoutPanel.TabIndex = 13;
+            // 
+            // ConditionValueTextBox1
+            // 
+            this.ConditionValueTextBox1.Location = new System.Drawing.Point(203, 3);
+            this.ConditionValueTextBox1.Name = "ConditionValueTextBox1";
+            this.ConditionValueTextBox1.Size = new System.Drawing.Size(69, 22);
+            this.ConditionValueTextBox1.TabIndex = 4;
+            this.ConditionValueTextBox1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.TextBox_KeyPress);
             // 
             // ConditionGroupBox
             // 
             this.ConditionGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.ConditionGroupBox.Controls.Add(this.AddCondition);
             this.ConditionGroupBox.Controls.Add(this.DeleteCondition);
-            this.ConditionGroupBox.Location = new System.Drawing.Point(11, 255);
+            this.ConditionGroupBox.Location = new System.Drawing.Point(11, 253);
             this.ConditionGroupBox.Name = "ConditionGroupBox";
-            this.ConditionGroupBox.Size = new System.Drawing.Size(363, 52);
+            this.ConditionGroupBox.Size = new System.Drawing.Size(282, 52);
             this.ConditionGroupBox.TabIndex = 7;
             this.ConditionGroupBox.TabStop = false;
             this.ConditionGroupBox.Text = "Добавление/удаление условий";
             // 
             // DeleteCondition
             // 
-            this.DeleteCondition.Location = new System.Drawing.Point(105, 21);
+            this.DeleteCondition.Location = new System.Drawing.Point(150, 21);
             this.DeleteCondition.Name = "DeleteCondition";
-            this.DeleteCondition.Size = new System.Drawing.Size(92, 22);
+            this.DeleteCondition.Size = new System.Drawing.Size(122, 22);
             this.DeleteCondition.TabIndex = 14;
             this.DeleteCondition.Text = "-";
             this.DeleteCondition.UseVisualStyleBackColor = true;
@@ -247,7 +245,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(381, 355);
+            this.ClientSize = new System.Drawing.Size(305, 351);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.TableLayoutPanel);
@@ -256,15 +254,17 @@
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.ConditionGroupBox);
             this.Controls.Add(this.groupBox1);
+            this.MaximumSize = new System.Drawing.Size(323, 548);
+            this.MinimumSize = new System.Drawing.Size(323, 398);
             this.Name = "CreateRuleForm";
             this.Text = "Добавление авто-правила";
-            ((System.ComponentModel.ISupportInitialize)(this.ConditionValueTextBox)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.groupBox5.ResumeLayout(false);
             this.TableLayoutPanel.ResumeLayout(false);
+            this.TableLayoutPanel.PerformLayout();
             this.ConditionGroupBox.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -272,9 +272,8 @@
         }
 
         #endregion
-        private System.Windows.Forms.NumericUpDown ConditionValueTextBox;
-        private System.Windows.Forms.ComboBox ConditionOperatorComboBox;
-        private System.Windows.Forms.ComboBox ConditionFieldComboBox;
+        private System.Windows.Forms.ComboBox ConditionOperatorComboBox1;
+        private System.Windows.Forms.ComboBox ConditionFieldComboBox1;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.TextBox NameTextBox;
@@ -289,5 +288,6 @@
         private System.Windows.Forms.GroupBox ConditionGroupBox;
         private System.Windows.Forms.Button DeleteCondition;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox ConditionValueTextBox1;
     }
 }
