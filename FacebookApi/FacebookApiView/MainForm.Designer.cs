@@ -32,6 +32,7 @@
             this.DataGridView = new System.Windows.Forms.DataGridView();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Targer = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CreateRuleButton = new System.Windows.Forms.Button();
@@ -61,13 +62,16 @@
             this.DataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Column1,
             this.Targer,
+            this.Column4,
             this.Column3,
             this.Column2});
             this.DataGridView.Location = new System.Drawing.Point(12, 75);
             this.DataGridView.Name = "DataGridView";
             this.DataGridView.ReadOnly = true;
+            this.DataGridView.RowHeadersVisible = false;
             this.DataGridView.RowHeadersWidth = 30;
             this.DataGridView.RowTemplate.Height = 24;
+            this.DataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.DataGridView.Size = new System.Drawing.Size(717, 263);
             this.DataGridView.StandardTab = true;
             this.DataGridView.TabIndex = 6;
@@ -78,28 +82,30 @@
             this.Column1.HeaderText = "Название";
             this.Column1.MinimumWidth = 6;
             this.Column1.Name = "Column1";
-            this.Column1.ReadOnly = true;
             // 
             // Targer
             // 
             this.Targer.HeaderText = "Цель Правила";
             this.Targer.MinimumWidth = 6;
             this.Targer.Name = "Targer";
-            this.Targer.ReadOnly = true;
+            // 
+            // Column4
+            // 
+            this.Column4.HeaderText = "Срок выполнения";
+            this.Column4.MinimumWidth = 6;
+            this.Column4.Name = "Column4";
             // 
             // Column3
             // 
-            this.Column3.HeaderText = "Действие";
+            this.Column3.HeaderText = "Триггер";
             this.Column3.MinimumWidth = 6;
             this.Column3.Name = "Column3";
-            this.Column3.ReadOnly = true;
             // 
             // Column2
             // 
-            this.Column2.HeaderText = "Условие";
+            this.Column2.HeaderText = "Фильтры";
             this.Column2.MinimumWidth = 6;
             this.Column2.Name = "Column2";
-            this.Column2.ReadOnly = true;
             // 
             // CreateRuleButton
             // 
@@ -232,6 +238,7 @@
         private System.Windows.Forms.BindingSource filtersResultBindingSource;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Targer;
+        private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
     }

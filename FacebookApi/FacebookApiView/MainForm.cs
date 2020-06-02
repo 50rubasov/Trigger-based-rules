@@ -198,37 +198,60 @@ namespace FacebookApiView
             var request = new RestRequest($"act_{acc}/adrules_library", Method.GET);
             request.AddQueryParameter("fields", "entity_type,evaluation_spec,execution_spec,name,schedule_spec,execution_type");
             var json = await re.ExecuteRequestAsync(request);
+            string timepresent = null;
+            string entitytype = null;
             
-
             foreach (var rule in json["data"])
             {
+                string filtercondition = null;
+                string triggerResult = null;
+                bool errorfilter = false;
                 var filter = rule["evaluation_spec"]["filters"];
                 var trigger = rule["evaluation_spec"]["trigger"];
 
                 List<JToken> filters = filter.Children().ToList();
                 //если правило не на основе триггеров
                 if (trigger != null)
-                {
-                    List<JToken> triggers = trigger.Parent.ToList();
-                    filters.AddRange(triggers);
-                }
+                    {
+                    triggerResult = trigger.ToObject<FiltersResult>().ToString();
+                    }
 
-                List<FiltersResult> searchResults = new List<FiltersResult>();
+                List<FiltersResult> filtersResults = new List<FiltersResult>();
                 foreach (JToken result in filters)
                 {
-                    if ((result.ToString().Contains("entity_type") || result.ToString().Contains("time_preset") || result.ToString().Contains("attribution_window")) == false)
+                    try
                     {
-                        FiltersResult searchResult = result.ToObject<FiltersResult>();
-                        searchResults.Add(searchResult);
+                        FiltersResult filtersResult = result.ToObject<FiltersResult>();
+                        filtersResults.Add(filtersResult);
+                    }
+                    catch 
+                    {                     
+                        
+                        filtercondition += "(Нечитаемый фильтр)"+result;
+                        errorfilter = true;
+                    }
+
+                }
+                
+                foreach (var s in filtersResults)
+                {
+                    if (s.Field == "entity_type")
+                    {
+                        entitytype = s.ToString();
+                    }
+                    if (s.Field == "time_preset")
+                    {
+                        timepresent = s.ToString();
+                    }
+                    if ((s.Field == "attribution_window" || s.Field == "entity_type" || s.Field == "time_preset") == false)
+                    {
+                        filtercondition = filtercondition + s;
                     }
                 }
-                string condition = null;
-                foreach (var s in searchResults)
-                {
-                    condition = condition + s;
-                }
-                DataGridView.Rows.Add(rule["name"], rule["entity_type"], rule["execution_spec"]["execution_type"], condition);
-
+                DataGridView.Rows.Add(rule["name"], entitytype, timepresent, triggerResult, filtercondition);
+              
+                
+                
             }
 
         }

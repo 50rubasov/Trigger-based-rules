@@ -30,7 +30,7 @@ namespace FacebookApiModel
         /// <param name="name">Название правила</param>
         /// <param name="value">Значение</param>
         /// <returns></returns>
-        public async Task UploadAsync(string acc, string trigger, string name,  string entityType,  string action,string filters)
+        public async Task UploadAsync(string acc, string trigger, string name,  string entityType,string filters, string time)
         {
             try
             {
@@ -46,11 +46,11 @@ namespace FacebookApiModel
                                                  + "\"operator\" : \"EQUAL\"},"
                                                  + "{"
                                                  + "\"field\": \"time_preset\","
-                                                 + "\"value\": \"LIFETIME\","
+                                                 + "\"value\": \"" + time + "\","
                                                  + "\"operator\": \"EQUAL\" }," + filters + "]}";
 
 
-                    string executionSpecString = "{\"execution_type\":\""+action+"\"}";
+                    string executionSpecString = "{\"execution_type\":\"PAUSE\"}";
                     var execution_spec = JObject.Parse(executionSpecString);
                     var evaluation_spec = JObject.Parse(evalutionSpecString);
                   

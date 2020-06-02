@@ -10,15 +10,30 @@ namespace FacebookApiModel
     public partial class FiltersResult
     {
         /// <summary>
+        /// Высота.
+        /// </summary>
+        private string _field;
+        /// <summary>
+        /// Длинна.
+        /// </summary>
+        private string _operator;
+        /// <summary>
+        /// Ширина.
+        /// </summary>
+        private string _value;
+        /// <summary>
+        /// Количество отверстий сабвуфера.
+        /// </summary>
+       
+        /// <summary>
         /// Словарь для перевода поля на русский язык.
         /// </summary>
         public Dictionary<string, string> revnames = new Dictionary<string, string>();
         public FiltersResult()
         {
             revnames.Add("cost_per", "Цена за результат");
-            revnames.Add("results","Результаты");
-            // для обычных правил
-            revnames.Add("result", "Результаты");
+            revnames.Add("results","Результаты");        
+            revnames.Add("result", "Результаты"); // для обычных правил
             revnames.Add("spent","Расходы");
             revnames.Add("GREATER_THAN",">");
             revnames.Add("LESS_THAN","<");
@@ -26,22 +41,77 @@ namespace FacebookApiModel
             revnames.Add("ADSET","Группа объявлений");
             revnames.Add("CAMPAIGN","Компания");
             revnames.Add("AD","Объявление");
+            revnames.Add("LIFETIME", "Весь срок действия");
+            revnames.Add("TODAY", "Сегодня");
+            revnames.Add("cost_per_mobile_app_install", "Цена за установку");
+            revnames.Add("impressions", "Показы");
+            revnames.Add("reach", "Охват");
+            revnames.Add("link_click", "Клики по ссылке");
+            revnames.Add("cpm", "CPM");
+            revnames.Add("cpc", "CPC");
+            revnames.Add("ctr", "CTR");
         }
         /// <summary>
         /// Поле
         /// </summary>
         [JsonProperty("field")]
-        public string Field { get; set; }
+        public string Field
+        {
+            get
+            {
+                return _field;
+
+            }
+            set
+            {
+                if (revnames.ContainsKey(value))
+                {
+                    _field = revnames[value];
+                }
+                else _field = value;
+
+            }
+        }
         /// <summary>
         /// Значение
         /// </summary>
         [JsonProperty("value")]
-        public string Value { get; set; }
+        public string Value
+        {
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                if ((Field == "Расходы") || (Field == "Цена за результат") || (Field == "Цена за установку"))
+                {
+                    double v = Int32.Parse(value);               
+                    value = (v / 100).ToString();
+                }
+                _value = value;
+            }
+        }
+
         /// <summary>
         /// Оператор
         /// </summary>
         [JsonProperty("operator")]
-        public string Operator { get; set; }
+        public string Operator {
+            get
+            {
+
+                return _operator;
+            }
+            set
+            {
+                if (revnames.ContainsKey(value))
+                {
+                    _operator = revnames[value];
+                }
+                else _operator = value;
+            }
+        }
 
         /// <summary>
         /// Формирование строки вывода
@@ -49,23 +119,14 @@ namespace FacebookApiModel
         /// <returns></returns>
         public override string ToString()
         {
-            if ((Field == "cost_per") || (Field == "spent"))
+            
+            if (Field == "entity_type" || Field == "time_preset")
             {
-                double v = Int32.Parse(Value);
-                // если значение целое 1300 -> 13
-                if (v % 100 == 0)
-                {
-                    v = v / 100;
-                    Value = v.ToString();
-                }
-                //если значение вещественное 1325 -> 13,25
-                else
-                {
-
-                    Value = (v/100).ToString() + "," + (v % 100).ToString();
-                }
+                return $"{revnames[Value]}";
             }
-            return $"{revnames[Field]} {revnames[Operator]} {Value}; ";
+
+            return $"{Field} {Operator} {Value}; ";
+            
         }
     }
 }
