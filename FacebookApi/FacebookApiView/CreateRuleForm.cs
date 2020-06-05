@@ -137,9 +137,10 @@ namespace FacebookApiView
         /// <param name="sender">объект</param>
         /// <param name="e">действие</param>
         private void AddCondition_Click(object sender, EventArgs e)
-        {
-            if (TableLayoutPanel.RowCount < 5)
+        {           
+            if (TableLayoutPanel.RowCount < 6)
             {
+                FiltersLabel.Visible = true;
                 textboxcounter++;
                 ComboBox field = new ComboBox();
                 ComboBox op = new ComboBox();
@@ -162,19 +163,27 @@ namespace FacebookApiView
                 value.Size = new Size(69, 22);
                 value.Text = "0";
 
-                field.Leave += ConditionFieldComboBox1_Leave;
-
+                field.Leave += ConditionFieldComboBox1_Leave;                
                 TableLayoutPanel.RowCount = ++TableLayoutPanel.RowCount;
-                TableLayoutPanel.Size = new Size(282, TableLayoutPanel.Size.Height + 30);
+                //Для корректного отображения добавления фильтров
+                if (textboxcounter == 2)
+                {
+                    TableLayoutPanel.Size = new Size(282, TableLayoutPanel.Size.Height + 50);
+                    this.Height += 50;
+                }
+                else
+                {
+                    TableLayoutPanel.Size = new Size(282, TableLayoutPanel.Size.Height + 30);
+                    this.Height += 30;
+                }
                 TableLayoutPanel.RowStyles.Add(new RowStyle());
                 TableLayoutPanel.Controls.Add(field, 0, TableLayoutPanel.RowCount - 1);
                 TableLayoutPanel.Controls.Add(op, 1, TableLayoutPanel.RowCount - 1);
-                TableLayoutPanel.Controls.Add(value, 2, TableLayoutPanel.RowCount - 1);
-                this.Height += 30;
+                TableLayoutPanel.Controls.Add(value, 2, TableLayoutPanel.RowCount - 1);               
             }
             else
             {
-                MessageBox.Show("Количество дополнительных правил должно быть меньше 5-ти", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Количество дополнительных правил должно быть меньше 4-х", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
         }
@@ -197,7 +206,7 @@ namespace FacebookApiView
         private void DeleteCondition_Click(object sender, EventArgs e)
         {
             int row = TableLayoutPanel.RowCount - 1;
-            if (row > 0)
+            if (row > 1)
             {
                 for (int i = 0; i < TableLayoutPanel.ColumnCount; i++)
                 {
@@ -208,8 +217,18 @@ namespace FacebookApiView
 
                 TableLayoutPanel.RowStyles.RemoveAt(row);
                 TableLayoutPanel.RowCount--;
-                TableLayoutPanel.Size = new Size(282, TableLayoutPanel.Size.Height - 30);
-                this.Height -= 30;
+                //Для корректного отображения добавления фильтров
+                if (textboxcounter == 2)
+                {
+                    TableLayoutPanel.Size = new Size(282, TableLayoutPanel.Size.Height - 50);
+                    this.Height -= 50;
+                }
+                else
+                {
+                    TableLayoutPanel.Size = new Size(282, TableLayoutPanel.Size.Height - 30);
+                    this.Height -= 30;
+                }
+
                 textboxcounter--;
             }
         }
