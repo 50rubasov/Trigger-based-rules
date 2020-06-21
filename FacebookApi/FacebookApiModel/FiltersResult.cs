@@ -24,10 +24,12 @@ namespace FacebookApiModel
         /// <summary>
         /// Количество отверстий сабвуфера.
         /// </summary>
-       
+
         /// <summary>
         /// Словарь для перевода поля на русский язык.
         /// </summary>
+        /// // TODO: именование
+        /// // TODO: readonly?
         public Dictionary<string, string> revnames = new Dictionary<string, string>();
         public FiltersResult()
         {

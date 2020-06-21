@@ -11,41 +11,53 @@ namespace FacebookApiView
 {
     public partial class MainForm : Form
     {
+        // TODO: слишком много полей/логики в главном окне. Создать класс менеджера, в который перенести все поля и логику из обработчиков формы.
+        // Форма должна создать экземпляр менеджера и потом только вызывать его методы
         /// <summary>
         /// Подключение к Facebook Api.
         /// </summary>
+        // TODO: именование
         private const string apiAddress = "https://graph.facebook.com/v6.0/";
         /// <summary>
         /// Создание объекта класса для отправки запросов к API
         /// </summary>
+        /// // TODO: именование
+        /// // TODO: правильнее было бы сделать синглтон с поддержкой многопоточности
         private static RequestExecutor re;
         /// <summary>
         /// Создание объекта класса для создания новых правил. 
         /// </summary>
+        /// // TODO: именование
         public RulesCreator rc = new RulesCreator(re);
         /// <summary>
         /// Создание объекта класса для работы с API.
         /// </summary>
+        /// // TODO: именование
         private Navigator navigator = new Navigator(re);
         /// <summary>
         /// Токен доступа.
         /// </summary>
+        // TODO: именование
         public static string token;
         /// <summary>
         /// Список БМов.
         /// </summary>
+        // TODO: именование
         public List<JToken> bms;
         /// <summary>
         /// Список рекламных акаунтов.
         /// </summary>
+        /// // TODO: именование
         public List<JToken> acs;
         /// <summary>
         /// ID БМа
         /// </summary>
+        /// // TODO: именование
         private string bmid;
         /// <summary>
         /// ID РК.
         /// </summary>
+        /// // TODO: именование
         public string accid;
 
         /// <summary>
@@ -63,12 +75,15 @@ namespace FacebookApiView
         /// <param name="e">Действие</param>
         private void CreateRuleButton_Click(object sender, EventArgs e)
         {
-            if(TokenTextBox.Text != "" && BmComboBox.SelectedItem != null && RkComboBox.SelectedItem != null)
+            // TODO: именование контролов
+            // TODO: перемножение трёх условий лучше вынести в отдельный метод IsAccountSelected() - выше читаемость. Вывод месседжбокса можно туда же.
+            if (TokenTextBox.Text != "" && BmComboBox.SelectedItem != null && RkComboBox.SelectedItem != null)
             {
                 CreateRuleForm createRule = new CreateRuleForm(accid, re);
 
                 createRule.ShowDialog();
                 // обновление окна датагрида
+                // TODO: метод называется GetRules, но ничего не возвращает. Именование
                 GetRules(accid);
             }
             else
@@ -83,8 +98,10 @@ namespace FacebookApiView
         /// <param name="e">Действие</param>
         private async void DeleteButton_Click(object sender, EventArgs e)
         {
+            // TODO: проверка условия повторяется - вынести в метод
             if (TokenTextBox.Text != "" && BmComboBox.SelectedItem != null && RkComboBox.SelectedItem != null)
             {
+                // TODO: эту логику в отдельный менеджер
                 var request = new RestRequest($"act_{accid}/adrules_library", Method.GET);
                 request.AddQueryParameter("fields", "name");
                 var json = await re.ExecuteRequestAsync(request);
@@ -104,6 +121,7 @@ namespace FacebookApiView
             }
             else
             {
+                // TODO: было бы правильнее сделать, чтобы кнопки были заблокированы, если аккаунт не выбран
                 MessageBox.Show("Необходимо выбрать аккаунт", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
@@ -117,6 +135,7 @@ namespace FacebookApiView
         {
             try
             {
+                // TODO: все в метод менеджера
                 if (TokenTextBox.Text != "")
                 {
                     token = TokenTextBox.Text;
@@ -149,6 +168,7 @@ namespace FacebookApiView
         /// </summary>
         /// <param name="apiAddress">Facebook Api</param>
         /// <returns>Запрос</returns>
+        /// // TODO: в менеджер
         private static RequestExecutor GetConfiguredRequestExecutor(string apiAddress)
         {
             return new RequestExecutor(apiAddress, token);
@@ -187,6 +207,7 @@ namespace FacebookApiView
                 GetRules(accid);       
         }
 
+        // TODO: в менеджер
         /// <summary>
         /// Добавление правил в таблицу DataGrid.
         /// </summary>
@@ -194,7 +215,8 @@ namespace FacebookApiView
         public async void GetRules(string acc)
         {
             DataGridView.Rows.Clear();
-            
+
+            // TODO: все строки вынести в отдельный класс, где каждая строка будет константой. Здесь вместо прямого написания строк использовать вызов констант - меньше вероятность ошибки.
             var request = new RestRequest($"act_{acc}/adrules_library", Method.GET);
             request.AddQueryParameter("fields", "entity_type,evaluation_spec,execution_spec,name,schedule_spec,execution_type");
             var json = await re.ExecuteRequestAsync(request);
@@ -248,6 +270,7 @@ namespace FacebookApiView
                         filtercondition = filtercondition + s;
                     }
                 }
+                // TODO: вот эта часть остается в форме, а менеджер просто возвращает данные для строки таблицы
                 DataGridView.Rows.Add(rule["name"], entitytype, timepresent, triggerResult, filtercondition);
               
                 

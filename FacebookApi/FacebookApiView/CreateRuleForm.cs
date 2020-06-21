@@ -8,6 +8,7 @@ using FacebookApiModel;
 
 namespace FacebookApiView
 {
+    // TODO: бизнес-логика плотно перемешана с прямым управлением контролов - по-хорошему надо разделить
     public partial class CreateRuleForm : Form
     {
         /// <summary>
@@ -43,6 +44,7 @@ namespace FacebookApiView
         {
             InitializeComponent();
 
+            // TODO: аналогичные имена есть в FiltersResult. Нельзя их инициализизовать в одном месте и использовать в форме?
             names.Add("Цена за результат", "cost_per");
             names.Add("Результаты", "results");
             names.Add("Расходы", "spent");
@@ -73,6 +75,7 @@ namespace FacebookApiView
         /// <param name="e">действие</param>
         private void CreateButton_Click(object sender, EventArgs e)
         {
+            // TODO: лучше инвартировать условие, чтобы не городить такую вложенность
             if (NameTextBox.Text != "" && EntityTypeComboBox.SelectedItem != null && ConditionFieldComboBox1.SelectedItem != null && ConditionValueTextBox1.Text != "")
             {
                 string trigger = null;
@@ -119,8 +122,10 @@ namespace FacebookApiView
                 }
                 catch(Exception ex)
                 {
+                    // TODO: обработка базового класса исключений - плохо. Вообще, можно было бы в окне выводить какую-то информацию из самого исключения, чтобы как-то конкретезировать для пользователя тип ошибки
                     MessageBox.Show("Ошибка отправки запроса создания нового правила", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+                // TODO: такие месседжбоксы бесят. Если выполнение операции не занимает минуты, то показывать месседжбокс смысла нет - пользователь и так сразу видит успешный результат
                 NameTextBox.Text = "";
                 MessageBox.Show("Правило добавлено! Можете добавить еще");
             }
@@ -156,6 +161,7 @@ namespace FacebookApiView
                 field.Items.AddRange(fields);
                 op.Items.AddRange(ops);
 
+                // TODO: магические числа в именованные константы
                 field.Size = new Size(151, 24);
                 field.DropDownStyle = ComboBoxStyle.DropDownList;
                 op.Size = new Size(37, 24);

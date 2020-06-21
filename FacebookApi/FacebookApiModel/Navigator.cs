@@ -13,6 +13,7 @@ namespace FacebookApiModel
     /// </summary>
     public class Navigator
     {
+        // TODO: именование
         /// <summary>
         /// Объект класса отправки запроса
         /// </summary>
@@ -26,6 +27,7 @@ namespace FacebookApiModel
             _re = re;
         }
 
+        // TODO: именование
         /// <summary>
         /// Получение всех БМов.
         /// </summary>
@@ -46,6 +48,7 @@ namespace FacebookApiModel
         /// <returns>название рк</returns>
         public async Task<List<JToken>> GetBmsAdAccountsAsync(string bmid, bool includeBanned = false)
         {
+            // TODO: опять куча строк - вынести в отдельный класс-словарь с именованными константами
             var request = new RestRequest($"{bmid}/client_ad_accounts", Method.GET);
             request.AddQueryParameter("fields", "name,account_status");
             var json = await _re.ExecuteRequestAsync(request);

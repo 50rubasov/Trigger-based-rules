@@ -11,6 +11,7 @@ namespace FacebookApiModel
     /// </summary>
     public class RulesCreator
     {
+        // TODO: именование
         /// <summary>
         /// Объект класса отправки запроса
         /// </summary>
@@ -30,6 +31,7 @@ namespace FacebookApiModel
         /// <param name="name">Название правила</param>
         /// <param name="value">Значение</param>
         /// <returns></returns>
+        /// // TODO: xml-комментарий содержит неправильный список параметров
         public async Task UploadAsync(string acc, string trigger, string name,  string entityType,string filters, string time)
         {
             try
@@ -65,6 +67,7 @@ namespace FacebookApiModel
             }
             catch (Exception ex)
             {
+                // TODO: зачем? Создавая новое исключение, ты теряешь всю полезную информацию из исключения, вылетевшего со стороны API
                 throw new Exception();
             }
         }

@@ -29,7 +29,7 @@ namespace FacebookApiModel
             Rc = new RestClient(apiAddress);
             _accessToken = accessToken;
             //Прокси
-
+            // TODO: это нужно? Если нет - удалить, если да - оставить комментарий зачем это нужно и когда можно будет удалить/раскомментировать
             //if (!string.IsNullOrEmpty(proxyAddress))
             //{
             //    Rc.Proxy = new WebProxy()
@@ -53,6 +53,7 @@ namespace FacebookApiModel
         /// <returns></returns>
         public async Task<JObject> ExecuteRequestAsync(RestRequest req, bool changeToken = true)
         {
+            // TODO: именование переменных
             if (changeToken)
             {
                 if (req.Method == Method.GET)
