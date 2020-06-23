@@ -4,13 +4,14 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using FacebookApiModel;
-
-
+using System.Diagnostics;
+using System.Text;
+using System.IO;
 namespace FacebookApiView
 {
-    // TODO: бизнес-логика плотно перемешана с прямым управлением контролов - по-хорошему надо разделить
     public partial class CreateRuleForm : Form
     {
+        private const int _tableWidth = 282;
         /// <summary>
         /// Объект класса отправления запроса.
         /// </summary>
@@ -34,7 +35,7 @@ namespace FacebookApiView
         /// <summary>
         /// Словарь для перевода русского текста в поля объекта
         /// </summary>
-        Dictionary<string, string> names = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> Names = new Dictionary<string, string>();
         /// <summary>
         /// Конструктор класса.
         /// </summary>
@@ -44,25 +45,24 @@ namespace FacebookApiView
         {
             InitializeComponent();
 
-            // TODO: аналогичные имена есть в FiltersResult. Нельзя их инициализизовать в одном месте и использовать в форме?
-            names.Add("Цена за результат", "cost_per");
-            names.Add("Результаты", "results");
-            names.Add("Расходы", "spent");
-            names.Add("Цена за установку", "cost_per_mobile_app_install");
-            names.Add("Показы", "impressions"); 
-            names.Add("Охват", "reach");
-            names.Add("Клики по ссылке", "link_click");
-            names.Add("CPM", "cpm");
-            names.Add("CPC", "cpc");
-            names.Add("CTR", "ctr");
-            names.Add(">", "GREATER_THAN");
-            names.Add("<", "LESS_THAN");
-            names.Add("=", "EQUAL");
-            names.Add("Группа объявлений", "ADSET");
-            names.Add("Компания", "CAMPAIGN");
-            names.Add("Объявление", "AD");
-            names.Add("Весь срок действия", "LIFETIME");
-            names.Add("Сегодня", "TODAY");
+            Names.Add("Цена за результат", "cost_per");
+            Names.Add("Результаты", "results");
+            Names.Add("Расходы", "spent");
+            Names.Add("Цена за установку", "cost_per_mobile_app_install");
+            Names.Add("Показы", "impressions"); 
+            Names.Add("Охват", "reach");
+            Names.Add("Клики по ссылке", "link_click");
+            Names.Add("CPM", "cpm");
+            Names.Add("CPC", "cpc");
+            Names.Add("CTR", "ctr");
+            Names.Add(">", "GREATER_THAN");
+            Names.Add("<", "LESS_THAN");
+            Names.Add("=", "EQUAL");
+            Names.Add("Группа объявлений", "ADSET");
+            Names.Add("Компания", "CAMPAIGN");
+            Names.Add("Объявление", "AD");
+            Names.Add("Весь срок действия", "LIFETIME");
+            Names.Add("Сегодня", "TODAY");
             _acc = acc;
             rc = new RulesCreator(re);
             _action = "PAUSE";
@@ -73,10 +73,13 @@ namespace FacebookApiView
         /// </summary>
         /// <param name="sender">объект</param>
         /// <param name="e">действие</param>
-        private void CreateButton_Click(object sender, EventArgs e)
+        private async void CreateButtonClick(object sender, EventArgs e)
         {
-            // TODO: лучше инвартировать условие, чтобы не городить такую вложенность
-            if (NameTextBox.Text != "" && EntityTypeComboBox.SelectedItem != null && ConditionFieldComboBox1.SelectedItem != null && ConditionValueTextBox1.Text != "")
+            if (NameTextBox.Text == "" || EntityTypeComboBox.SelectedItem == null || ConditionFieldComboBox1.SelectedItem == null || ConditionValueTextBox1.Text == "")
+            {
+                MessageBox.Show("Заполнены не все поля", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else
             {
                 string trigger = null;
                 string filters = null;
@@ -89,20 +92,20 @@ namespace FacebookApiView
                     operators = (TableLayoutPanel.Controls["ConditionOperatorComboBox" + i.ToString()] as ComboBox).Text;
                     values = (TableLayoutPanel.Controls["ConditionValueTextBox" + i.ToString()] as NumericUpDown).Text;
 
-            
+
                     if ((fields == "Цена за результат") || (fields == "Расходы") || (fields == "Цена за установку"))
-                    {                      
-                            string clearv = values.Replace(",", "");
-                            values = clearv.Replace(".", "");
-                   
+                    {
+                        string clearv = values.Replace(",", "");
+                        values = clearv.Replace(".", "");
+
                     }
                     //Если поле - фильтр
                     if (i > 1)
                     {
                         filters = filters + "{"
-                        + "\"field\": \"" + names[fields] + "\","
+                        + "\"field\": \"" + Names[fields] + "\","
                         + "\"value\": \"" + values + "\","
-                        + "\"operator\" : \"" + names[operators] + "\"},";
+                        + "\"operator\" : \"" + Names[operators] + "\"},";
                     }
                     //Если поле - триггер
                     else
@@ -110,28 +113,23 @@ namespace FacebookApiView
                         trigger = "{\"evaluation_type\":\"TRIGGER\","
                                                          + "\"trigger\" : {"
                                                          + "\"type\" : \"STATS_CHANGE\","
-                                                         + "\"field\": \"" + names[fields] + "\","
+                                                         + "\"field\": \"" + Names[fields] + "\","
                                                          + "\"value\": \"" + values + "\","
-                                                         + "\"operator\": \"" + names[operators] + "\"},";
+                                                         + "\"operator\": \"" + Names[operators] + "\"},";
                     }
                 }
 
                 try
                 {
-                    rc.UploadAsync(_acc, trigger, NameTextBox.Text, _entityType, filters, names[TimeRangeComboBox.Text]);
+                    await rc.UploadAsync(_acc, trigger, NameTextBox.Text, _entityType, filters, Names[TimeRangeComboBox.Text]);
+                    MessageBox.Show("Правило добавлено! Можете добавить еще");
                 }
-                catch(Exception ex)
+                catch (Exception msg)
                 {
-                    // TODO: обработка базового класса исключений - плохо. Вообще, можно было бы в окне выводить какую-то информацию из самого исключения, чтобы как-то конкретезировать для пользователя тип ошибки
-                    MessageBox.Show("Ошибка отправки запроса создания нового правила", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(msg.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
                 }
-                // TODO: такие месседжбоксы бесят. Если выполнение операции не занимает минуты, то показывать месседжбокс смысла нет - пользователь и так сразу видит успешный результат
                 NameTextBox.Text = "";
-                MessageBox.Show("Правило добавлено! Можете добавить еще");
-            }
-            else
-            {
-                MessageBox.Show("Заполнены не все поля", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -141,8 +139,13 @@ namespace FacebookApiView
         /// </summary>
         /// <param name="sender">объект</param>
         /// <param name="e">действие</param>
-        private void AddCondition_Click(object sender, EventArgs e)
-        {           
+        private void AddConditionClick(object sender, EventArgs e)
+        {
+            const int fieldWidth = 151;
+            const int controlsHeight = 24;
+            const int opWidth = 37;
+            const int valueWidth = 69;
+            
             if (TableLayoutPanel.RowCount < 6)
             {
                 FiltersLabel.Visible = true;
@@ -160,26 +163,25 @@ namespace FacebookApiView
 
                 field.Items.AddRange(fields);
                 op.Items.AddRange(ops);
-
-                // TODO: магические числа в именованные константы
-                field.Size = new Size(151, 24);
+                
+                field.Size = new Size(fieldWidth, controlsHeight);
                 field.DropDownStyle = ComboBoxStyle.DropDownList;
-                op.Size = new Size(37, 24);
+                op.Size = new Size(opWidth, controlsHeight);
                 op.DropDownStyle = ComboBoxStyle.DropDownList;
-                value.Size = new Size(69, 22);
+                value.Size = new Size(valueWidth, controlsHeight);
                 value.Text = "0";
 
-                field.Leave += ConditionFieldComboBox1_Leave;                
+                field.Leave += ConditionFieldComboBoxLeave;                
                 TableLayoutPanel.RowCount = ++TableLayoutPanel.RowCount;
                 //Для корректного отображения добавления фильтров
                 if (textboxcounter == 2)
                 {
-                    TableLayoutPanel.Size = new Size(282, TableLayoutPanel.Size.Height + 50);
+                    TableLayoutPanel.Size = new Size(_tableWidth, TableLayoutPanel.Size.Height + 50);
                     this.Height += 50;
                 }
                 else
                 {
-                    TableLayoutPanel.Size = new Size(282, TableLayoutPanel.Size.Height + 30);
+                    TableLayoutPanel.Size = new Size(_tableWidth, TableLayoutPanel.Size.Height + 30);
                     this.Height += 30;
                 }
                 TableLayoutPanel.RowStyles.Add(new RowStyle());
@@ -199,7 +201,7 @@ namespace FacebookApiView
         /// </summary>
         /// <param name="sender">объект</param>
         /// <param name="e">действие</param>
-        private void CloseButton_Click(object sender, EventArgs e)
+        private void CloseButtonClick(object sender, EventArgs e)
         {
             Close();
         }
@@ -209,7 +211,7 @@ namespace FacebookApiView
         /// </summary>
         /// <param name="sender">объект</param>
         /// <param name="e">действие</param>
-        private void DeleteCondition_Click(object sender, EventArgs e)
+        private void DeleteConditionClick(object sender, EventArgs e)
         {
             int row = TableLayoutPanel.RowCount - 1;
             if (row > 1)
@@ -226,12 +228,12 @@ namespace FacebookApiView
                 //Для корректного отображения добавления фильтров
                 if (textboxcounter == 2)
                 {
-                    TableLayoutPanel.Size = new Size(282, TableLayoutPanel.Size.Height - 50);
+                    TableLayoutPanel.Size = new Size(_tableWidth, TableLayoutPanel.Size.Height - 50);
                     this.Height -= 50;
                 }
                 else
                 {
-                    TableLayoutPanel.Size = new Size(282, TableLayoutPanel.Size.Height - 30);
+                    TableLayoutPanel.Size = new Size(_tableWidth, TableLayoutPanel.Size.Height - 30);
                     this.Height -= 30;
                 }
 
@@ -243,10 +245,10 @@ namespace FacebookApiView
         /// </summary>
         /// <param name="sender">объект</param>
         /// <param name="e">действие</param>
-        private void EntityTypeComboBox_Leave(object sender, EventArgs e)
+        private void EntityTypeComboBoxLeave(object sender, EventArgs e)
         {
             if(EntityTypeComboBox.Text != "")
-            _entityType = names[EntityTypeComboBox.Text];
+            _entityType = Names[EntityTypeComboBox.Text];
             else MessageBox.Show("Имя не может быть пустым", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
        
@@ -255,7 +257,7 @@ namespace FacebookApiView
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ConditionFieldComboBox1_Leave(object sender, EventArgs e)
+        private void ConditionFieldComboBoxLeave(object sender, EventArgs e)
         {
             var textbox = sender as ComboBox;
 

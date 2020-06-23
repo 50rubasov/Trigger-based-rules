@@ -11,54 +11,42 @@ namespace FacebookApiView
 {
     public partial class MainForm : Form
     {
-        // TODO: слишком много полей/логики в главном окне. Создать класс менеджера, в который перенести все поля и логику из обработчиков формы.
-        // Форма должна создать экземпляр менеджера и потом только вызывать его методы
         /// <summary>
         /// Подключение к Facebook Api.
         /// </summary>
-        // TODO: именование
-        private const string apiAddress = "https://graph.facebook.com/v6.0/";
+        private const string _apiAddress = "https://graph.facebook.com/v6.0/";
         /// <summary>
         /// Создание объекта класса для отправки запросов к API
         /// </summary>
-        /// // TODO: именование
-        /// // TODO: правильнее было бы сделать синглтон с поддержкой многопоточности
-        private static RequestExecutor re;
+        private static RequestExecutor _ReqEx;
         /// <summary>
         /// Создание объекта класса для создания новых правил. 
         /// </summary>
-        /// // TODO: именование
-        public RulesCreator rc = new RulesCreator(re);
+        public RulesCreator RulesCreator = new RulesCreator(_ReqEx);
         /// <summary>
         /// Создание объекта класса для работы с API.
         /// </summary>
-        /// // TODO: именование
-        private Navigator navigator = new Navigator(re);
+        private Navigator Navigator = new Navigator(_ReqEx);
         /// <summary>
         /// Токен доступа.
         /// </summary>
-        // TODO: именование
-        public static string token;
+        public static string _token;
         /// <summary>
         /// Список БМов.
         /// </summary>
-        // TODO: именование
-        public List<JToken> bms;
+        public List<JToken> Bms;
         /// <summary>
         /// Список рекламных акаунтов.
         /// </summary>
-        /// // TODO: именование
-        public List<JToken> acs;
+        public List<JToken> Acs;
         /// <summary>
         /// ID БМа
         /// </summary>
-        /// // TODO: именование
-        private string bmid;
+        private string _bmId;
         /// <summary>
         /// ID РК.
         /// </summary>
-        /// // TODO: именование
-        public string accid;
+        public string _accId;
 
         /// <summary>
         /// Конструктор класса MainForm.
@@ -66,29 +54,40 @@ namespace FacebookApiView
         public MainForm()
         {
             InitializeComponent();
-           
+            CreateRuleButton.Enabled = false;
+            DeleteRuleButton.Enabled = false;
+        }
+
+        /// <summary>
+        /// Метод, проверяющий, выбран ли аккаунт
+        /// </summary>
+        /// <returns>выбран/не выбран</returns>
+        private bool IsAccountSelected()
+        {
+            if (TokenTextBox.Text == "" || BmComboBox.SelectedItem == null || RkComboBox.SelectedItem == null)
+            {
+                MessageBox.Show("Необходимо выбрать аккаунт", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);              
+                return false;        
+            }
+            else
+            {                
+                return true;
+            }
         }
         /// <summary>
         /// Событие создания нового правила.
         /// </summary>
         /// <param name="sender">Объект</param>
         /// <param name="e">Действие</param>
-        private void CreateRuleButton_Click(object sender, EventArgs e)
+        private void CreateRuleButtonClick(object sender, EventArgs e)
         {
-            // TODO: именование контролов
-            // TODO: перемножение трёх условий лучше вынести в отдельный метод IsAccountSelected() - выше читаемость. Вывод месседжбокса можно туда же.
-            if (TokenTextBox.Text != "" && BmComboBox.SelectedItem != null && RkComboBox.SelectedItem != null)
+            if(IsAccountSelected())
             {
-                CreateRuleForm createRule = new CreateRuleForm(accid, re);
+                CreateRuleForm createRule = new CreateRuleForm(_accId, _ReqEx);
 
                 createRule.ShowDialog();
                 // обновление окна датагрида
-                // TODO: метод называется GetRules, но ничего не возвращает. Именование
-                GetRules(accid);
-            }
-            else
-            {
-                MessageBox.Show("Необходимо выбрать аккаунт", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowRules(_accId);
             }
         }
         /// <summary>
@@ -96,15 +95,13 @@ namespace FacebookApiView
         /// </summary>
         /// <param name="sender">Объект</param>
         /// <param name="e">Действие</param>
-        private async void DeleteButton_Click(object sender, EventArgs e)
+        private async void DeleteRuleButtonClick(object sender, EventArgs e)
         {
-            // TODO: проверка условия повторяется - вынести в метод
-            if (TokenTextBox.Text != "" && BmComboBox.SelectedItem != null && RkComboBox.SelectedItem != null)
+            if (IsAccountSelected())
             {
-                // TODO: эту логику в отдельный менеджер
-                var request = new RestRequest($"act_{accid}/adrules_library", Method.GET);
+                var request = new RestRequest($"act_{_accId}/adrules_library", Method.GET);
                 request.AddQueryParameter("fields", "name");
-                var json = await re.ExecuteRequestAsync(request);
+                var json = await _ReqEx.ExecuteRequestAsync(request);
                 string selected = DataGridView.SelectedCells[0].Value.ToString();
                 foreach (var rule in json["data"])
                 {
@@ -112,17 +109,12 @@ namespace FacebookApiView
                     if (name == selected)
                     {
                         request = new RestRequest($"{rule["id"]}", Method.DELETE);
-                        var js = await re.ExecuteRequestAsync(request);
+                        var js = await _ReqEx.ExecuteRequestAsync(request);
 
                         DataGridView.Rows.RemoveAt(DataGridView.SelectedCells[0].RowIndex);
                     }
                 }
-                GetRules(accid);
-            }
-            else
-            {
-                // TODO: было бы правильнее сделать, чтобы кнопки были заблокированы, если аккаунт не выбран
-                MessageBox.Show("Необходимо выбрать аккаунт", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowRules(_accId);
             }
         }
 
@@ -131,31 +123,35 @@ namespace FacebookApiView
         /// </summary>
         /// <param name="sender">Объект</param>
         /// <param name="e">Действие</param>
-        private async void TokenTextBox_Leave(object sender, EventArgs e)
+        private async void TokenTextBoxLeave(object sender, EventArgs e)
         {
             try
             {
-                // TODO: все в метод менеджера
+                BmComboBox.Items.Clear();
+                RkComboBox.Items.Clear();
+                DataGridView.Rows.Clear();
                 if (TokenTextBox.Text != "")
                 {
-                    token = TokenTextBox.Text;
-                    re = GetConfiguredRequestExecutor(apiAddress);
-                    navigator = new Navigator(re);
+                    _token = TokenTextBox.Text;
+                    _ReqEx = GetConfiguredRequestExecutor(_apiAddress);
+                    Navigator = new Navigator(_ReqEx);
 
-                    bms = await navigator.GetAllBmsAsync();
-                    for (int i = 0; i < bms.Count; i++)
+                    Bms = await Navigator.GetAllBmsAsync();
+                    for (int i = 0; i < Bms.Count; i++)
                     {
-                        var bm = bms[i];
+                        var bm = Bms[i];
                         BmComboBox.Items.Add($"{bm["name"]}");
                     }
+                  
                 }
                 else
                 {
+                    CreateRuleButton.Enabled = false;
+                    DeleteRuleButton.Enabled = false;
                     MessageBox.Show("Поле токена не может быть пустым", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    BmComboBox.Items.Clear();
-                    RkComboBox.Items.Clear();
-                    DataGridView.Rows.Clear();
+                 
                 }
+                
             }
             catch (Exception ex)
             {
@@ -168,10 +164,9 @@ namespace FacebookApiView
         /// </summary>
         /// <param name="apiAddress">Facebook Api</param>
         /// <returns>Запрос</returns>
-        /// // TODO: в менеджер
         private static RequestExecutor GetConfiguredRequestExecutor(string apiAddress)
         {
-            return new RequestExecutor(apiAddress, token);
+            return new RequestExecutor(apiAddress, _token);
         }
 
         /// <summary>
@@ -179,18 +174,18 @@ namespace FacebookApiView
         /// </summary>
         /// <param name="sender">Объект</param>
         /// <param name="e">Действие</param>
-        private async void BmComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        private async void BmComboBoxSelectedIndexChanged(object sender, EventArgs e)
         {
            
                 DataGridView.Rows.Clear();
                 RkComboBox.Items.Clear();
                 RkComboBox.Text = null;
-                bmid = bms[BmComboBox.SelectedIndex]["id"].ToString();
-                acs = await navigator.GetBmsAdAccountsAsync(bmid, true);
+                _bmId = Bms[BmComboBox.SelectedIndex]["id"].ToString();
+                Acs = await Navigator.GetBmsAdAccountsAsync(_bmId, true);
 
-                for (int i = 0; i < acs.Count; i++)
+                for (int i = 0; i < Acs.Count; i++)
                 {
-                    var acc = acs[i];
+                    var acc = Acs[i];
                     RkComboBox.Items.Add($"{acc["name"]}");
                 }
             
@@ -200,26 +195,26 @@ namespace FacebookApiView
         /// </summary>
         /// <param name="sender">Объект</param>
         /// <param name="e">Действие</param>
-        private void RkComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void RkComboBoxSelectedIndexChanged(object sender, EventArgs e)
         {         
                 DataGridView.Rows.Clear();
-                accid = acs[RkComboBox.SelectedIndex]["id"].ToString().TrimStart(new[] { 'a', 'c', 't', '_' });
-                GetRules(accid);       
+                _accId = Acs[RkComboBox.SelectedIndex]["id"].ToString().TrimStart(new[] { 'a', 'c', 't', '_' });
+                CreateRuleButton.Enabled = true;
+                DeleteRuleButton.Enabled = true;
+                ShowRules(_accId);       
         }
 
-        // TODO: в менеджер
         /// <summary>
         /// Добавление правил в таблицу DataGrid.
         /// </summary>
         /// <param name="acc">id рк.</param>
-        public async void GetRules(string acc)
+        public async void ShowRules(string acc)
         {
             DataGridView.Rows.Clear();
-
-            // TODO: все строки вынести в отдельный класс, где каждая строка будет константой. Здесь вместо прямого написания строк использовать вызов констант - меньше вероятность ошибки.
+            
             var request = new RestRequest($"act_{acc}/adrules_library", Method.GET);
             request.AddQueryParameter("fields", "entity_type,evaluation_spec,execution_spec,name,schedule_spec,execution_type");
-            var json = await re.ExecuteRequestAsync(request);
+            var json = await _ReqEx.ExecuteRequestAsync(request);
             string timepresent = null;
             string entitytype = null;
             
@@ -270,11 +265,8 @@ namespace FacebookApiView
                         filtercondition = filtercondition + s;
                     }
                 }
-                // TODO: вот эта часть остается в форме, а менеджер просто возвращает данные для строки таблицы
                 DataGridView.Rows.Add(rule["name"], entitytype, timepresent, triggerResult, filtercondition);
-              
-                
-                
+           
             }
 
         }

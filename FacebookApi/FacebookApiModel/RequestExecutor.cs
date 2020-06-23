@@ -2,7 +2,7 @@
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using System.Threading.Tasks;
-
+using System;
 namespace FacebookApiModel
 {
     /// <summary>
@@ -28,21 +28,6 @@ namespace FacebookApiModel
         {
             Rc = new RestClient(apiAddress);
             _accessToken = accessToken;
-            //Прокси
-            // TODO: это нужно? Если нет - удалить, если да - оставить комментарий зачем это нужно и когда можно будет удалить/раскомментировать
-            //if (!string.IsNullOrEmpty(proxyAddress))
-            //{
-            //    Rc.Proxy = new WebProxy()
-            //    {
-            //        Address = new Uri($"http://{proxyAddress}:{proxyPort}"),
-            //        Credentials = new NetworkCredential()
-            //        {
-            //            UserName = proxyLogin,
-            //            Password = proxyPassword
-            //        }
-            //    };
-            //}
-
         }
 
         /// <summary>
@@ -53,7 +38,6 @@ namespace FacebookApiModel
         /// <returns></returns>
         public async Task<JObject> ExecuteRequestAsync(RestRequest req, bool changeToken = true)
         {
-            // TODO: именование переменных
             if (changeToken)
             {
                 if (req.Method == Method.GET)
@@ -62,7 +46,7 @@ namespace FacebookApiModel
                     req.AddParameter("access_token", _accessToken);
             }
             var resp = await Rc.ExecuteTaskAsync(req);
-            var respJson = (JObject)JsonConvert.DeserializeObject(resp.Content);
+            var respJson = (JObject)JsonConvert.DeserializeObject(resp.Content);           
             return respJson;
         }
     }

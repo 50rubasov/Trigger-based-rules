@@ -13,21 +13,19 @@ namespace FacebookApiModel
     /// </summary>
     public class Navigator
     {
-        // TODO: именование
         /// <summary>
         /// Объект класса отправки запроса
         /// </summary>
-        private readonly RequestExecutor _re;
+        private readonly RequestExecutor _reqEx;
         /// <summary>
         /// Конструктор класса.
         /// </summary>
         /// <param name="re">Объект класса отправки запроса</param>
         public Navigator(RequestExecutor re)
         {
-            _re = re;
+            _reqEx = re;
         }
 
-        // TODO: именование
         /// <summary>
         /// Получение всех БМов.
         /// </summary>
@@ -35,7 +33,7 @@ namespace FacebookApiModel
         public async Task<List<JToken>> GetAllBmsAsync()
         {
             var request = new RestRequest($"me/businesses", Method.GET);
-            var json = await _re.ExecuteRequestAsync(request);
+            var json = await _reqEx.ExecuteRequestAsync(request);
             var bms = json["data"].ToList();
             return bms;
         }
@@ -48,14 +46,13 @@ namespace FacebookApiModel
         /// <returns>название рк</returns>
         public async Task<List<JToken>> GetBmsAdAccountsAsync(string bmid, bool includeBanned = false)
         {
-            // TODO: опять куча строк - вынести в отдельный класс-словарь с именованными константами
             var request = new RestRequest($"{bmid}/client_ad_accounts", Method.GET);
             request.AddQueryParameter("fields", "name,account_status");
-            var json = await _re.ExecuteRequestAsync(request);
+            var json = await _reqEx.ExecuteRequestAsync(request);
             var accounts = json["data"].ToList();
             request = new RestRequest($"{bmid}/owned_ad_accounts", Method.GET);
             request.AddQueryParameter("fields", "name,account_status");
-            json = await _re.ExecuteRequestAsync(request);
+            json = await _reqEx.ExecuteRequestAsync(request);
             accounts.AddRange(json["data"].ToList());
             //Исключаем забаненные
             if (!includeBanned)

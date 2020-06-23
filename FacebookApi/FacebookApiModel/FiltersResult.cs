@@ -24,34 +24,32 @@ namespace FacebookApiModel
         /// <summary>
         /// Количество отверстий сабвуфера.
         /// </summary>
-
+       
         /// <summary>
         /// Словарь для перевода поля на русский язык.
         /// </summary>
-        /// // TODO: именование
-        /// // TODO: readonly?
-        public Dictionary<string, string> revnames = new Dictionary<string, string>();
+        public readonly Dictionary<string, string> RevNames = new Dictionary<string, string>();
         public FiltersResult()
         {
-            revnames.Add("cost_per", "Цена за результат");
-            revnames.Add("results","Результаты");        
-            revnames.Add("result", "Результаты"); // для обычных правил
-            revnames.Add("spent","Расходы");
-            revnames.Add("GREATER_THAN",">");
-            revnames.Add("LESS_THAN","<");
-            revnames.Add("EQUAL","=");
-            revnames.Add("ADSET","Группа объявлений");
-            revnames.Add("CAMPAIGN","Компания");
-            revnames.Add("AD","Объявление");
-            revnames.Add("LIFETIME", "Весь срок действия");
-            revnames.Add("TODAY", "Сегодня");
-            revnames.Add("cost_per_mobile_app_install", "Цена за установку");
-            revnames.Add("impressions", "Показы");
-            revnames.Add("reach", "Охват");
-            revnames.Add("link_click", "Клики по ссылке");
-            revnames.Add("cpm", "CPM");
-            revnames.Add("cpc", "CPC");
-            revnames.Add("ctr", "CTR");
+            RevNames.Add("cost_per", "Цена за результат");
+            RevNames.Add("results","Результаты");        
+            RevNames.Add("result", "Результаты"); // для обычных правил
+            RevNames.Add("spent","Расходы");
+            RevNames.Add("GREATER_THAN",">");
+            RevNames.Add("LESS_THAN","<");
+            RevNames.Add("EQUAL","=");
+            RevNames.Add("ADSET","Группа объявлений");
+            RevNames.Add("CAMPAIGN","Компания");
+            RevNames.Add("AD","Объявление");
+            RevNames.Add("LIFETIME", "Весь срок действия");
+            RevNames.Add("TODAY", "Сегодня");
+            RevNames.Add("cost_per_mobile_app_install", "Цена за установку");
+            RevNames.Add("impressions", "Показы");
+            RevNames.Add("reach", "Охват");
+            RevNames.Add("link_click", "Клики по ссылке");
+            RevNames.Add("cpm", "CPM");
+            RevNames.Add("cpc", "CPC");
+            RevNames.Add("ctr", "CTR");
         }
         /// <summary>
         /// Поле
@@ -66,9 +64,9 @@ namespace FacebookApiModel
             }
             set
             {
-                if (revnames.ContainsKey(value))
+                if (RevNames.ContainsKey(value))
                 {
-                    _field = revnames[value];
+                    _field = RevNames[value];
                 }
                 else _field = value;
 
@@ -107,9 +105,9 @@ namespace FacebookApiModel
             }
             set
             {
-                if (revnames.ContainsKey(value))
+                if (RevNames.ContainsKey(value))
                 {
-                    _operator = revnames[value];
+                    _operator = RevNames[value];
                 }
                 else _operator = value;
             }
@@ -124,7 +122,7 @@ namespace FacebookApiModel
             
             if (Field == "entity_type" || Field == "time_preset")
             {
-                return $"{revnames[Value]}";
+                return $"{RevNames[Value]}";
             }
 
             return $"{Field} {Operator} {Value}; ";

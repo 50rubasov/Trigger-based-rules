@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.DataGridView = new System.Windows.Forms.DataGridView();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Targer = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -36,7 +37,7 @@
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.CreateRuleButton = new System.Windows.Forms.Button();
-            this.DeleteButton = new System.Windows.Forms.Button();
+            this.DeleteRuleButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.RkComboBox = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -82,30 +83,35 @@
             this.Column1.HeaderText = "Название";
             this.Column1.MinimumWidth = 6;
             this.Column1.Name = "Column1";
+            this.Column1.ReadOnly = true;
             // 
             // Targer
             // 
             this.Targer.HeaderText = "Цель Правила";
             this.Targer.MinimumWidth = 6;
             this.Targer.Name = "Targer";
+            this.Targer.ReadOnly = true;
             // 
             // Column4
             // 
             this.Column4.HeaderText = "Срок выполнения";
             this.Column4.MinimumWidth = 6;
             this.Column4.Name = "Column4";
+            this.Column4.ReadOnly = true;
             // 
             // Column3
             // 
             this.Column3.HeaderText = "Триггер";
             this.Column3.MinimumWidth = 6;
             this.Column3.Name = "Column3";
+            this.Column3.ReadOnly = true;
             // 
             // Column2
             // 
             this.Column2.HeaderText = "Фильтры";
             this.Column2.MinimumWidth = 6;
             this.Column2.Name = "Column2";
+            this.Column2.ReadOnly = true;
             // 
             // CreateRuleButton
             // 
@@ -115,19 +121,19 @@
             this.CreateRuleButton.TabIndex = 7;
             this.CreateRuleButton.Text = "Добавить новое правило";
             this.CreateRuleButton.UseVisualStyleBackColor = true;
-            this.CreateRuleButton.Click += new System.EventHandler(this.CreateRuleButton_Click);
+            this.CreateRuleButton.Click += new System.EventHandler(this.CreateRuleButtonClick);
             // 
-            // DeleteButton
+            // DeleteRuleButton
             // 
-            this.DeleteButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.DeleteRuleButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.DeleteButton.Location = new System.Drawing.Point(459, 344);
-            this.DeleteButton.Name = "DeleteButton";
-            this.DeleteButton.Size = new System.Drawing.Size(270, 33);
-            this.DeleteButton.TabIndex = 8;
-            this.DeleteButton.Text = "Удалить правило";
-            this.DeleteButton.UseVisualStyleBackColor = true;
-            this.DeleteButton.Click += new System.EventHandler(this.DeleteButton_Click);
+            this.DeleteRuleButton.Location = new System.Drawing.Point(459, 344);
+            this.DeleteRuleButton.Name = "DeleteRuleButton";
+            this.DeleteRuleButton.Size = new System.Drawing.Size(270, 33);
+            this.DeleteRuleButton.TabIndex = 8;
+            this.DeleteRuleButton.Text = "Удалить правило";
+            this.DeleteRuleButton.UseVisualStyleBackColor = true;
+            this.DeleteRuleButton.Click += new System.EventHandler(this.DeleteRuleButtonClick);
             // 
             // groupBox1
             // 
@@ -152,7 +158,7 @@
             this.RkComboBox.Name = "RkComboBox";
             this.RkComboBox.Size = new System.Drawing.Size(154, 24);
             this.RkComboBox.TabIndex = 6;
-            this.RkComboBox.SelectedIndexChanged += new System.EventHandler(this.RkComboBox_SelectedIndexChanged);
+            this.RkComboBox.SelectedIndexChanged += new System.EventHandler(this.RkComboBoxSelectedIndexChanged);
             // 
             // label2
             // 
@@ -180,7 +186,7 @@
             this.BmComboBox.Name = "BmComboBox";
             this.BmComboBox.Size = new System.Drawing.Size(121, 24);
             this.BmComboBox.TabIndex = 3;
-            this.BmComboBox.SelectedIndexChanged += new System.EventHandler(this.BmComboBox_SelectedIndexChanged);
+            this.BmComboBox.SelectedIndexChanged += new System.EventHandler(this.BmComboBoxSelectedIndexChanged);
             // 
             // TokenTextBox
             // 
@@ -188,7 +194,7 @@
             this.TokenTextBox.Name = "TokenTextBox";
             this.TokenTextBox.Size = new System.Drawing.Size(282, 22);
             this.TokenTextBox.TabIndex = 1;
-            this.TokenTextBox.Leave += new System.EventHandler(this.TokenTextBox_Leave);
+            this.TokenTextBox.Leave += new System.EventHandler(this.TokenTextBoxLeave);
             // 
             // label1
             // 
@@ -209,9 +215,10 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(741, 389);
             this.Controls.Add(this.groupBox1);
-            this.Controls.Add(this.DeleteButton);
+            this.Controls.Add(this.DeleteRuleButton);
             this.Controls.Add(this.CreateRuleButton);
             this.Controls.Add(this.DataGridView);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximumSize = new System.Drawing.Size(759, 436);
             this.MinimumSize = new System.Drawing.Size(759, 436);
             this.Name = "MainForm";
@@ -227,7 +234,7 @@
         #endregion
         private System.Windows.Forms.DataGridView DataGridView;
         private System.Windows.Forms.Button CreateRuleButton;
-        private System.Windows.Forms.Button DeleteButton;
+        private System.Windows.Forms.Button DeleteRuleButton;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox BmComboBox;
