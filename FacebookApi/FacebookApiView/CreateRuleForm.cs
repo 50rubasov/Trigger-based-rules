@@ -1,16 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using FacebookApiModel;
-using System.Diagnostics;
-using System.Text;
-using System.IO;
 namespace FacebookApiView
 {
     public partial class CreateRuleForm : Form
     {
+        /// <summary>
+        /// Объект класса перевода объектов JSON на русский язык
+        /// </summary>
+        public FiltersResult FilterRes = new FiltersResult();
+        /// <summary>
+        /// Константа ширины таблицы
+        /// </summary>
         private const int _tableWidth = 282;
         /// <summary>
         /// Объект класса отправления запроса.
@@ -25,17 +28,9 @@ namespace FacebookApiView
         /// </summary>
         private string _entityType;
         /// <summary>
-        /// Действие над правилом
-        /// </summary>
-        private string _action;
-        /// <summary>
         /// Счетчик текстбоксов.
         /// </summary>
         private int textboxcounter = 1;
-        /// <summary>
-        /// Словарь для перевода русского текста в поля объекта
-        /// </summary>
-        private readonly Dictionary<string, string> Names = new Dictionary<string, string>();
         /// <summary>
         /// Конструктор класса.
         /// </summary>
@@ -44,28 +39,8 @@ namespace FacebookApiView
         public CreateRuleForm(string acc, RequestExecutor re)
         {
             InitializeComponent();
-
-            Names.Add("Цена за результат", "cost_per");
-            Names.Add("Результаты", "results");
-            Names.Add("Расходы", "spent");
-            Names.Add("Цена за установку", "cost_per_mobile_app_install");
-            Names.Add("Показы", "impressions"); 
-            Names.Add("Охват", "reach");
-            Names.Add("Клики по ссылке", "link_click");
-            Names.Add("CPM", "cpm");
-            Names.Add("CPC", "cpc");
-            Names.Add("CTR", "ctr");
-            Names.Add(">", "GREATER_THAN");
-            Names.Add("<", "LESS_THAN");
-            Names.Add("=", "EQUAL");
-            Names.Add("Группа объявлений", "ADSET");
-            Names.Add("Компания", "CAMPAIGN");
-            Names.Add("Объявление", "AD");
-            Names.Add("Весь срок действия", "LIFETIME");
-            Names.Add("Сегодня", "TODAY");
             _acc = acc;
             rc = new RulesCreator(re);
-            _action = "PAUSE";
         }
 
         /// <summary>
@@ -86,42 +61,21 @@ namespace FacebookApiView
                 string fields;
                 string operators;
                 string values;
+   
                 for (int i = 1; i <= textboxcounter; i++)
                 {
                     fields = (TableLayoutPanel.Controls["ConditionFieldComboBox" + i.ToString()] as ComboBox).Text;
                     operators = (TableLayoutPanel.Controls["ConditionOperatorComboBox" + i.ToString()] as ComboBox).Text;
                     values = (TableLayoutPanel.Controls["ConditionValueTextBox" + i.ToString()] as NumericUpDown).Text;
 
-
-                    if ((fields == "Цена за результат") || (fields == "Расходы") || (fields == "Цена за установку"))
-                    {
-                        string clearv = values.Replace(",", "");
-                        values = clearv.Replace(".", "");
-
-                    }
-                    //Если поле - фильтр
-                    if (i > 1)
-                    {
-                        filters = filters + "{"
-                        + "\"field\": \"" + Names[fields] + "\","
-                        + "\"value\": \"" + values + "\","
-                        + "\"operator\" : \"" + Names[operators] + "\"},";
-                    }
-                    //Если поле - триггер
-                    else
-                    {
-                        trigger = "{\"evaluation_type\":\"TRIGGER\","
-                                                         + "\"trigger\" : {"
-                                                         + "\"type\" : \"STATS_CHANGE\","
-                                                         + "\"field\": \"" + Names[fields] + "\","
-                                                         + "\"value\": \"" + values + "\","
-                                                         + "\"operator\": \"" + Names[operators] + "\"},";
-                    }
+                    var result = rc.CreateMainCondition(fields, values, operators, trigger, filters, i);
+                    trigger = result.Item1;
+                    filters = result.Item2;
                 }
 
                 try
                 {
-                    await rc.UploadAsync(_acc, trigger, NameTextBox.Text, _entityType, filters, Names[TimeRangeComboBox.Text]);
+                    await rc.UploadAsync(_acc, trigger, NameTextBox.Text, _entityType, filters, FilterRes.Names.FirstOrDefault(x => x.Value == TimeRangeComboBox.Text).Key);
                     MessageBox.Show("Правило добавлено! Можете добавить еще");
                 }
                 catch (Exception msg)
@@ -248,7 +202,7 @@ namespace FacebookApiView
         private void EntityTypeComboBoxLeave(object sender, EventArgs e)
         {
             if(EntityTypeComboBox.Text != "")
-            _entityType = Names[EntityTypeComboBox.Text];
+            _entityType = FilterRes.Names.FirstOrDefault(x => x.Value == EntityTypeComboBox.Text).Key;
             else MessageBox.Show("Имя не может быть пустым", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
        

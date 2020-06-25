@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using FacebookApiModel;
 using Newtonsoft.Json.Linq;
@@ -12,17 +10,9 @@ namespace FacebookApiView
     public partial class MainForm : Form
     {
         /// <summary>
-        /// Подключение к Facebook Api.
-        /// </summary>
-        private const string _apiAddress = "https://graph.facebook.com/v6.0/";
-        /// <summary>
         /// Создание объекта класса для отправки запросов к API
         /// </summary>
         private static RequestExecutor _ReqEx;
-        /// <summary>
-        /// Создание объекта класса для создания новых правил. 
-        /// </summary>
-        public RulesCreator RulesCreator = new RulesCreator(_ReqEx);
         /// <summary>
         /// Создание объекта класса для работы с API.
         /// </summary>
@@ -40,14 +30,13 @@ namespace FacebookApiView
         /// </summary>
         public List<JToken> Acs;
         /// <summary>
-        /// ID БМа
-        /// </summary>
-        private string _bmId;
-        /// <summary>
         /// ID РК.
         /// </summary>
         public string _accId;
-
+        /// <summary>
+        /// Строковые значения объектов JSON.
+        /// </summary>
+        private StringDictionary _strDict = new StringDictionary();
         /// <summary>
         /// Конструктор класса MainForm.
         /// </summary>
@@ -67,7 +56,7 @@ namespace FacebookApiView
             if (TokenTextBox.Text == "" || BmComboBox.SelectedItem == null || RkComboBox.SelectedItem == null)
             {
                 MessageBox.Show("Необходимо выбрать аккаунт", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);              
-                return false;        
+                return false;       
             }
             else
             {                
@@ -84,7 +73,6 @@ namespace FacebookApiView
             if(IsAccountSelected())
             {
                 CreateRuleForm createRule = new CreateRuleForm(_accId, _ReqEx);
-
                 createRule.ShowDialog();
                 // обновление окна датагрида
                 ShowRules(_accId);
@@ -99,23 +87,17 @@ namespace FacebookApiView
         {
             if (IsAccountSelected())
             {
-                var request = new RestRequest($"act_{_accId}/adrules_library", Method.GET);
-                request.AddQueryParameter("fields", "name");
-                var json = await _ReqEx.ExecuteRequestAsync(request);
-                string selected = DataGridView.SelectedCells[0].Value.ToString();
-                foreach (var rule in json["data"])
+                if(DataGridView.Rows.Count > 0)
                 {
-                    string name = rule["name"].ToString();
-                    if (name == selected)
-                    {
-                        request = new RestRequest($"{rule["id"]}", Method.DELETE);
-                        var js = await _ReqEx.ExecuteRequestAsync(request);
-
-                        DataGridView.Rows.RemoveAt(DataGridView.SelectedCells[0].RowIndex);
-                    }
+                    Navigator.DeleteRules(_accId, DataGridView.SelectedCells[0].Value.ToString());
+                    DataGridView.Rows.RemoveAt(DataGridView.SelectedCells[0].RowIndex);
                 }
-                ShowRules(_accId);
-            }
+                
+                else
+                {
+                    MessageBox.Show("Невозможно удалить правило", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }           
         }
 
         /// <summary>
@@ -127,6 +109,7 @@ namespace FacebookApiView
         {
             try
             {
+                string _apiAddress = "https://graph.facebook.com/v6.0/";
                 BmComboBox.Items.Clear();
                 RkComboBox.Items.Clear();
                 DataGridView.Rows.Clear();
@@ -140,7 +123,7 @@ namespace FacebookApiView
                     for (int i = 0; i < Bms.Count; i++)
                     {
                         var bm = Bms[i];
-                        BmComboBox.Items.Add($"{bm["name"]}");
+                        BmComboBox.Items.Add(bm[_strDict.Name]);
                     }
                   
                 }
@@ -176,17 +159,16 @@ namespace FacebookApiView
         /// <param name="e">Действие</param>
         private async void BmComboBoxSelectedIndexChanged(object sender, EventArgs e)
         {
-           
                 DataGridView.Rows.Clear();
                 RkComboBox.Items.Clear();
                 RkComboBox.Text = null;
-                _bmId = Bms[BmComboBox.SelectedIndex]["id"].ToString();
+                string _bmId = Bms[BmComboBox.SelectedIndex][_strDict.Id].ToString();
                 Acs = await Navigator.GetBmsAdAccountsAsync(_bmId, true);
 
                 for (int i = 0; i < Acs.Count; i++)
                 {
                     var acc = Acs[i];
-                    RkComboBox.Items.Add($"{acc["name"]}");
+                    RkComboBox.Items.Add(acc[_strDict.Name]);
                 }
             
         }
@@ -198,7 +180,7 @@ namespace FacebookApiView
         private void RkComboBoxSelectedIndexChanged(object sender, EventArgs e)
         {         
                 DataGridView.Rows.Clear();
-                _accId = Acs[RkComboBox.SelectedIndex]["id"].ToString().TrimStart(new[] { 'a', 'c', 't', '_' });
+                _accId = Acs[RkComboBox.SelectedIndex][_strDict.Id].ToString().TrimStart(new[] { 'a', 'c', 't', '_' });
                 CreateRuleButton.Enabled = true;
                 DeleteRuleButton.Enabled = true;
                 ShowRules(_accId);       
@@ -212,60 +194,20 @@ namespace FacebookApiView
         {
             DataGridView.Rows.Clear();
             
-            var request = new RestRequest($"act_{acc}/adrules_library", Method.GET);
-            request.AddQueryParameter("fields", "entity_type,evaluation_spec,execution_spec,name,schedule_spec,execution_type");
-            var json = await _ReqEx.ExecuteRequestAsync(request);
-            string timepresent = null;
-            string entitytype = null;
+            var request = new RestRequest($"act_{acc}/{_strDict.AdrulesLibrary}", Method.GET);
+            request.AddQueryParameter(_strDict.Fields, _strDict.EntityType + "," + _strDict.EvaluationSpec + ","
+                + _strDict.ExecutionSpec + "," + _strDict.Name + ","
+                + _strDict.ScheduleSpec + "," + _strDict.ExecutionType);
+            var json = await _ReqEx.ExecuteRequestAsync(request);            
             
-            foreach (var rule in json["data"])
+            foreach (var rule in json[_strDict.Data])
             {
-                string filtercondition = null;
-                string triggerResult = null;
-                bool errorfilter = false;
-                var filter = rule["evaluation_spec"]["filters"];
-                var trigger = rule["evaluation_spec"]["trigger"];
-
-                List<JToken> filters = filter.Children().ToList();
-                //если правило не на основе триггеров
-                if (trigger != null)
-                    {
-                    triggerResult = trigger.ToObject<FiltersResult>().ToString();
-                    }
-
-                List<FiltersResult> filtersResults = new List<FiltersResult>();
-                foreach (JToken result in filters)
-                {
-                    try
-                    {
-                        FiltersResult filtersResult = result.ToObject<FiltersResult>();
-                        filtersResults.Add(filtersResult);
-                    }
-                    catch 
-                    {                     
-                        
-                        filtercondition += "(Нечитаемый фильтр)"+result;
-                        errorfilter = true;
-                    }
-
-                }
                 
-                foreach (var s in filtersResults)
-                {
-                    if (s.Field == "entity_type")
-                    {
-                        entitytype = s.ToString();
-                    }
-                    if (s.Field == "time_preset")
-                    {
-                        timepresent = s.ToString();
-                    }
-                    if ((s.Field == "attribution_window" || s.Field == "entity_type" || s.Field == "time_preset") == false)
-                    {
-                        filtercondition = filtercondition + s;
-                    }
-                }
-                DataGridView.Rows.Add(rule["name"], entitytype, timepresent, triggerResult, filtercondition);
+                JToken filter = rule[_strDict.EvaluationSpec][_strDict.Filters];
+                JToken trigger = rule[_strDict.EvaluationSpec][_strDict.Trigger];
+                var result = Navigator.TranslateRules(trigger, filter); 
+                
+                DataGridView.Rows.Add(rule[_strDict.Name], result.Item1, result.Item2, result.Item3, result.Item4);
            
             }
 

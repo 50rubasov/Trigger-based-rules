@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using RestSharp;
 using System;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace FacebookApiModel
 {
@@ -23,8 +23,14 @@ namespace FacebookApiModel
         {
             _reqEx = re;
         }
-        public string msg;
-
+        /// <summary>
+        /// Строковые значения объектов JSON.
+        /// </summary>
+        private StringDictionary _strDict = new StringDictionary();
+        /// <summary>
+        /// Объект класса перевода объектов JSON на русский язык
+        /// </summary>
+        public FiltersResult FilterRes = new FiltersResult();
         /// <summary>
         /// Загрузка нового правила
         /// </summary>
@@ -58,10 +64,10 @@ namespace FacebookApiModel
                 var evaluation_spec = JObject.Parse(evalutionSpecString);
 
 
-                var req = new RestRequest($"act_{a}/adrules_library", Method.POST);
-                req.AddParameter("evaluation_spec", evaluation_spec);
-                req.AddParameter("execution_spec", execution_spec);
-                req.AddParameter("name", name);
+                var req = new RestRequest($"act_{a}/{_strDict.AdrulesLibrary}", Method.POST);
+                req.AddParameter(_strDict.EvaluationSpec, evaluation_spec);
+                req.AddParameter(_strDict.ExecutionSpec, execution_spec);
+                req.AddParameter(_strDict.Name, name);
 
                 var js = await _reqEx.ExecuteRequestAsync(req);
                 var error = js["error"]?["message"].ToString();
@@ -71,5 +77,46 @@ namespace FacebookApiModel
                 }
             }
         }
+        /// <summary>
+        /// Метод формирования условия триггера/фильтра
+        /// </summary>
+        /// <param name="fields">поле</param>
+        /// <param name="values">значение</param>
+        /// <param name="operators">оператор сравнения</param>
+        /// <param name="trigger">триггер</param>
+        /// <param name="filters">фильтры</param>
+        /// <param name="i">итератор количества дополнительных фильтров</param>
+        /// <returns></returns>
+        public Tuple<string, string> CreateMainCondition(string fields, string values, string operators, string trigger, string filters, int i)
+        {
+            if ((fields == "Цена за результат") || (fields == "Расходы") || (fields == "Цена за установку"))
+            {
+                string clearv = values.Replace(",", "");
+                values = clearv.Replace(".", "");
+
+            }
+            //Если поле - фильтр
+            if (i > 1)
+            {
+                filters = filters + "{"
+                + "\"field\": \"" + FilterRes.Names.FirstOrDefault(x => x.Value == fields).Key + "\","
+                + "\"value\": \"" + values + "\","
+                + "\"operator\" : \"" + FilterRes.Names.FirstOrDefault(x => x.Value == operators).Key + "\"},";
+            }
+            //Если поле - триггер
+            else
+            {
+                trigger = "{\"evaluation_type\":\"TRIGGER\","
+                                                 + "\"trigger\" : {"
+                                                 + "\"type\" : \"STATS_CHANGE\","
+                                                 + "\"field\": \"" + FilterRes.Names.FirstOrDefault(x => x.Value == fields).Key + "\","
+                                                 + "\"value\": \"" + values + "\","
+                                                 + "\"operator\": \"" + FilterRes.Names.FirstOrDefault(x => x.Value == operators).Key + "\"},";
+            }
+            return Tuple.Create<string, string>(
+                trigger,
+                filters                              
+                );
+        }       
     }
 }
