@@ -68,7 +68,7 @@ namespace FacebookApiView
                     operators = (TableLayoutPanel.Controls["ConditionOperatorComboBox" + i.ToString()] as ComboBox).Text;
                     values = (TableLayoutPanel.Controls["ConditionValueTextBox" + i.ToString()] as NumericUpDown).Text;
 
-                    var result = rc.CreateMainCondition(fields, values, operators, trigger, filters, i);
+                    var result = rc.CreateMainCondition(fields, values, operators, filters, i);
                     trigger = result.Item1;
                     filters = result.Item2;
                 }

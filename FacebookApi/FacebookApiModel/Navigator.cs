@@ -63,7 +63,23 @@ namespace FacebookApiModel
                 accounts = accounts.Where(acc => acc[_strDict.AccountStatus].ToString() != "2").ToList();
             return accounts;
         }
+        /// <summary>
+        /// Получение личного рекламного кабинета
+        /// </summary>
+        /// <param name="includeBanned">забаненные рекламные кабинеты</param>
+        /// <returns>название рк</returns>
+        public async Task<List<JToken>> GetAdAccountsAsync(bool includeBanned = false)
+        {
+            var request = new RestRequest($"me/personal_ad_accounts", Method.GET);
+            request.AddQueryParameter(_strDict.Fields, _strDict.Name+", "+ _strDict.Id);
+            var json = await _reqEx.ExecuteRequestAsync(request);
+            var accounts = json[_strDict.Data].ToList();
 
+            //Исключаем забаненные
+            if (!includeBanned)
+                accounts = accounts.Where(acc => acc[_strDict.AccountStatus].ToString() != "2").ToList();
+            return accounts;
+        }
         /// <summary>
         /// Метод удаления правил
         /// </summary>

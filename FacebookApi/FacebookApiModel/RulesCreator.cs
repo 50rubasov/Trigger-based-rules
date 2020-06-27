@@ -87,8 +87,9 @@ namespace FacebookApiModel
         /// <param name="filters">фильтры</param>
         /// <param name="i">итератор количества дополнительных фильтров</param>
         /// <returns></returns>
-        public Tuple<string, string> CreateMainCondition(string fields, string values, string operators, string trigger, string filters, int i)
+        public Tuple<string, string> CreateMainCondition(string fields, string values, string operators, string filters, int i)
         {
+            string trigger = null;
             if ((fields == "Цена за результат") || (fields == "Расходы") || (fields == "Цена за установку"))
             {
                 string clearv = values.Replace(",", "");

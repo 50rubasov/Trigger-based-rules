@@ -43,6 +43,7 @@ namespace FacebookApiModel
             Names.Add("LIFETIME", "Весь срок действия");
             Names.Add("TODAY", "Сегодня");
             Names.Add("cost_per_mobile_app_install", "Цена за установку");
+            Names.Add("lifetime_impressions", "Показы за все время");
             Names.Add("impressions", "Показы");
             Names.Add("reach", "Охват");
             Names.Add("link_click", "Клики по ссылке");

@@ -12,15 +12,15 @@ namespace FacebookApiView
         /// <summary>
         /// Создание объекта класса для отправки запросов к API
         /// </summary>
-        private static RequestExecutor _ReqEx;
+        private static RequestExecutor _reqEx;
         /// <summary>
         /// Создание объекта класса для работы с API.
         /// </summary>
-        private Navigator Navigator = new Navigator(_ReqEx);
+        private Navigator Navigator = new Navigator(_reqEx);
         /// <summary>
         /// Токен доступа.
         /// </summary>
-        public static string _token;
+        private static string _token;
         /// <summary>
         /// Список БМов.
         /// </summary>
@@ -72,7 +72,7 @@ namespace FacebookApiView
         {
             if(IsAccountSelected())
             {
-                CreateRuleForm createRule = new CreateRuleForm(_accId, _ReqEx);
+                CreateRuleForm createRule = new CreateRuleForm(_accId, _reqEx);
                 createRule.ShowDialog();
                 // обновление окна датагрида
                 ShowRules(_accId);
@@ -116,16 +116,17 @@ namespace FacebookApiView
                 if (TokenTextBox.Text != "")
                 {
                     _token = TokenTextBox.Text;
-                    _ReqEx = GetConfiguredRequestExecutor(_apiAddress);
-                    Navigator = new Navigator(_ReqEx);
+                    _reqEx = GetConfiguredRequestExecutor(_apiAddress);
+                    Navigator = new Navigator(_reqEx);
 
                     Bms = await Navigator.GetAllBmsAsync();
                     for (int i = 0; i < Bms.Count; i++)
                     {
                         var bm = Bms[i];
                         BmComboBox.Items.Add(bm[_strDict.Name]);
+                        
                     }
-                  
+                    BmComboBox.Items.Add("Личный РК");
                 }
                 else
                 {
@@ -159,31 +160,38 @@ namespace FacebookApiView
         /// <param name="e">Действие</param>
         private async void BmComboBoxSelectedIndexChanged(object sender, EventArgs e)
         {
-                DataGridView.Rows.Clear();
-                RkComboBox.Items.Clear();
-                RkComboBox.Text = null;
+            DataGridView.Rows.Clear();
+            RkComboBox.Items.Clear();
+            RkComboBox.Text = null;
+            if (BmComboBox.Text != "Личный РК")
+            {
                 string _bmId = Bms[BmComboBox.SelectedIndex][_strDict.Id].ToString();
                 Acs = await Navigator.GetBmsAdAccountsAsync(_bmId, true);
+            }
+            else Acs = await Navigator.GetAdAccountsAsync(true);
 
-                for (int i = 0; i < Acs.Count; i++)
+            for (int i = 0; i < Acs.Count; i++)
                 {
                     var acc = Acs[i];
                     RkComboBox.Items.Add(acc[_strDict.Name]);
                 }
-            
+           
         }
+
         /// <summary>
         /// Событие возникающее при выборе РК
         /// </summary>
         /// <param name="sender">Объект</param>
         /// <param name="e">Действие</param>
         private void RkComboBoxSelectedIndexChanged(object sender, EventArgs e)
-        {         
-                DataGridView.Rows.Clear();
-                _accId = Acs[RkComboBox.SelectedIndex][_strDict.Id].ToString().TrimStart(new[] { 'a', 'c', 't', '_' });
-                CreateRuleButton.Enabled = true;
-                DeleteRuleButton.Enabled = true;
-                ShowRules(_accId);       
+        {
+            DataGridView.Rows.Clear();
+
+            _accId = Acs[RkComboBox.SelectedIndex][_strDict.Id].ToString().TrimStart(new[] { 'a', 'c', 't', '_' });
+
+            CreateRuleButton.Enabled = true;
+            DeleteRuleButton.Enabled = true;
+            ShowRules(_accId);
         }
 
         /// <summary>
@@ -198,7 +206,7 @@ namespace FacebookApiView
             request.AddQueryParameter(_strDict.Fields, _strDict.EntityType + "," + _strDict.EvaluationSpec + ","
                 + _strDict.ExecutionSpec + "," + _strDict.Name + ","
                 + _strDict.ScheduleSpec + "," + _strDict.ExecutionType);
-            var json = await _ReqEx.ExecuteRequestAsync(request);            
+            var json = await _reqEx.ExecuteRequestAsync(request);            
             
             foreach (var rule in json[_strDict.Data])
             {
