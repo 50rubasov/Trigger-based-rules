@@ -118,7 +118,7 @@
             this.EntityTypeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.EntityTypeComboBox.FormattingEnabled = true;
             this.EntityTypeComboBox.Items.AddRange(new object[] {
-            "Компания",
+            "Кампания",
             "Группа объявлений",
             "Объявление"});
             this.EntityTypeComboBox.Location = new System.Drawing.Point(6, 21);

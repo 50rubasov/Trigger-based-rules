@@ -26,7 +26,7 @@ namespace FacebookApiModel
         /// <summary>
         /// Строковые значения объектов JSON.
         /// </summary>
-        private StringDictionary _strDict = new StringDictionary();
+        private RequestCommands _strDict = new RequestCommands();
         /// <summary>
         /// Объект класса перевода объектов JSON на русский язык
         /// </summary>

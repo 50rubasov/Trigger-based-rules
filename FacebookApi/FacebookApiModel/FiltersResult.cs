@@ -38,7 +38,7 @@ namespace FacebookApiModel
             Names.Add("LESS_THAN","<");
             Names.Add("EQUAL","=");
             Names.Add("ADSET","Группа объявлений");
-            Names.Add("CAMPAIGN","Компания");
+            Names.Add("CAMPAIGN","Кампания");
             Names.Add("AD","Объявление");
             Names.Add("LIFETIME", "Весь срок действия");
             Names.Add("TODAY", "Сегодня");

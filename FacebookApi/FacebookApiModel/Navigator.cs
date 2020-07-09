@@ -30,7 +30,7 @@ namespace FacebookApiModel
         /// Получение всех БМов.
         /// </summary>
         /// <returns>название БМа</returns>
-        private StringDictionary _strDict = new StringDictionary();
+        private RequestCommands _strDict = new RequestCommands();
         /// <summary>
         /// Объект класса перевода объектов JSON на русский язык
         /// </summary>

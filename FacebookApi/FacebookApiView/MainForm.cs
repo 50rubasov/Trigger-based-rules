@@ -36,7 +36,7 @@ namespace FacebookApiView
         /// <summary>
         /// Строковые значения объектов JSON.
         /// </summary>
-        private StringDictionary _strDict = new StringDictionary();
+        private RequestCommands _strDict = new RequestCommands();
         /// <summary>
         /// Конструктор класса MainForm.
         /// </summary>

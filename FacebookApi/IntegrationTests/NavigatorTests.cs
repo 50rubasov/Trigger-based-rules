@@ -13,13 +13,39 @@ namespace IntegrationTests
     /// </summary>
     public class Tests
     {
+        /// <summary>
+        /// Объект класса отправки запроса
+        /// </summary>
         private static RequestExecutor _reqEx;
+        /// <summary>
+        /// id рекламного аккаунта
+        /// </summary>
         private string _acc = "608186249803429";
+        /// <summary>
+        /// Объект класса для создания нового правила
+        /// </summary>
         public RulesCreator rc;
+        /// <summary>
+        /// API адресс facebook
+        /// </summary>
         private static string _apiAddress = "https://graph.facebook.com/v6.0/";
+        /// <summary>
+        /// Создание объекта класса для работы с API.
+        /// </summary>
         private Navigator Navigator;
-        private StringDictionary _strDict = new StringDictionary();
+        /// <summary>
+        /// Класс для перевода объектов JSON
+        /// </summary>
+        private RequestCommands _strDict = new RequestCommands();
+        /// <summary>
+        /// Токен доступа к тестовому аккаунту
+        /// </summary>
         private static string _token = "EAABsbCS1iHgBALRwFLMmFQmwATtlbFhuzZA7DcnPdmeSbRAFBvIWDIAnVkJlA6c3ka9cevCOOZBo0V72ubFtK8FiUr9xFrQaUGC4mgJlTWj1GnRWq9y58ZBRKCtdfjZBUsuehudQ3MHJm2z2ExMONXdpcndCYnBGdla0l0VZCZC2sIv1tDqsZCI";
+        /// <summary>
+        /// Формирование запроса к Facebook API
+        /// </summary>
+        /// <param name="apiAddress">api facebook</param>
+        /// <returns></returns>
         public static RequestExecutor GetConfiguredRequestExecutor(string apiAddress)
         {
             return new RequestExecutor(apiAddress, _token);
@@ -41,7 +67,7 @@ namespace IntegrationTests
             }
             foreach (var bm in Bms)
             {
-                name = Convert.ToString(bm["name"]);
+                name = Convert.ToString(bm[_strDict.Name]);
             }
             Assert.AreEqual("TEst", name);
         }
@@ -50,7 +76,6 @@ namespace IntegrationTests
         [TestCase(TestName = "Тест создания правила на основе триггеров")]
         public async Task UploadAsync()
         {
-            _acc = "608186249803429";
             FiltersResult FilterRes = new FiltersResult();
             rc = new RulesCreator(_reqEx);
             string trigger = null;
