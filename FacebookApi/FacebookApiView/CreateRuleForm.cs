@@ -68,7 +68,7 @@ namespace FacebookApiView
                     operators = (TableLayoutPanel.Controls["ConditionOperatorComboBox" + i.ToString()] as ComboBox).Text;
                     values = (TableLayoutPanel.Controls["ConditionValueTextBox" + i.ToString()] as NumericUpDown).Text;
 
-                    var result = rc.CreateMainCondition(fields, values, operators, filters, i);
+                    var result = rc.CreateMainCondition(fields, values, operators, filters, trigger, i);
                     trigger = result.Item1;
                     filters = result.Item2;
                 }
@@ -112,8 +112,8 @@ namespace FacebookApiView
                 op.Name = "ConditionOperatorComboBox" + textboxcounter;
                 value.Name = "ConditionValueTextBox" + textboxcounter;
 
-                string[] fields = { "Цена за результат", "Результаты", "Расходы", "Цена за установку", "Показы", "Охват" , "Клики по ссылке", "CPM", "CPC", "CTR" };
-                string[] ops = { ">", "<", "=" };
+                string[] fields = { "Цена за результат", "Результаты", "Расходы", "Цена за установку", "Показы", "Охват" , /*"Клики по ссылке",*/ "CPM", "CPC", "CTR" };
+                string[] ops = { ">", "<"};
 
                 field.Items.AddRange(fields);
                 op.Items.AddRange(ops);
@@ -124,7 +124,7 @@ namespace FacebookApiView
                 op.DropDownStyle = ComboBoxStyle.DropDownList;
                 value.Size = new Size(valueWidth, controlsHeight);
                 value.Text = "0";
-
+                value.Maximum = 10000000;
                 field.Leave += ConditionFieldComboBoxLeave;                
                 TableLayoutPanel.RowCount = ++TableLayoutPanel.RowCount;
                 //Для корректного отображения добавления фильтров

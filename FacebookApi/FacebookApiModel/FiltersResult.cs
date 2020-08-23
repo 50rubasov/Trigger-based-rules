@@ -46,7 +46,7 @@ namespace FacebookApiModel
             Names.Add("lifetime_impressions", "Показы за все время");
             Names.Add("impressions", "Показы");
             Names.Add("reach", "Охват");
-            Names.Add("link_click", "Клики по ссылке");
+            //Names.Add("link_click", "Клики по ссылке");
             Names.Add("cpm", "CPM");
             Names.Add("cpc", "CPC");
             Names.Add("ctr", "CTR");
