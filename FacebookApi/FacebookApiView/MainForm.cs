@@ -109,7 +109,7 @@ namespace FacebookApiView
         {
             try
             {
-                string _apiAddress = "https://graph.facebook.com/v6.0/";
+                string _apiAddress = "https://graph.facebook.com/v8.0/";
                 BmComboBox.Items.Clear();
                 RkComboBox.Items.Clear();
                 DataGridView.Rows.Clear();

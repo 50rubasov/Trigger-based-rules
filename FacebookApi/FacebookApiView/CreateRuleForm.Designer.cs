@@ -168,7 +168,6 @@
             "Цена за установку",
             "Показы",
             "Охват",
-            "Клики по ссылке",
             "CPM",
             "CPC",
             "CTR"});
@@ -267,7 +266,7 @@
             this.Controls.Add(this.ConditionGroupBox);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximumSize = new System.Drawing.Size(323, 531);
-            this.MinimumSize = new System.Drawing.Size(323, 356);
+            this.MinimumSize = new System.Drawing.Size(323, 392);
             this.Name = "CreateRuleForm";
             this.Text = "Добавление авто-правила";
             this.groupBox4.ResumeLayout(false);
